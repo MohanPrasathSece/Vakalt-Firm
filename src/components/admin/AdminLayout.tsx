@@ -9,8 +9,9 @@ import {
     LogOut,
     Menu,
     X,
-    User,
-    ExternalLink
+    ExternalLink,
+    ChevronRight,
+    User
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -46,110 +47,109 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     ];
 
     if (loading) {
-        return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-900 font-sans">Loading...</div>;
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center font-sans">
+                <div className="w-6 h-6 border-2 border-gray-200 border-t-black rounded-full animate-spin"></div>
+            </div>
+        );
     }
 
     return (
-        <div className="min-h-screen bg-[#F8F9FA] text-gray-900 flex font-sans admin-workspace">
-            {/* Global Admin Font Override to ensure NO SERIF/FANCY fonts */}
+        <div className="min-h-screen bg-[#F9FAFB] text-gray-900 flex font-sans selection:bg-black selection:text-white">
             <style>{`
-        .admin-workspace, 
-        .admin-workspace h1, 
-        .admin-workspace h2, 
-        .admin-workspace h3, 
-        .admin-workspace h4, 
-        .admin-workspace h5, 
-        .admin-workspace h6,
-        .admin-workspace p,
-        .admin-workspace span,
-        .admin-workspace div,
-        .admin-workspace button,
-        .admin-workspace input,
-        .admin-workspace textarea,
-        .admin-workspace select,
-        .admin-workspace label {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .sidebar-item-active {
+            background: #F3F4F6;
+            color: #000;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
         }
       `}</style>
 
             {/* Sidebar */}
             <aside
                 className={`${isSidebarOpen ? "w-64" : "w-20"
-                    } bg-white border-r border-gray-200 transition-all duration-300 flex flex-col fixed h-full z-50`}
+                    } bg-white border-r border-[#E5E7EB] transition-all duration-300 flex flex-col fixed h-full z-50`}
             >
-                <div className="p-6 flex items-center justify-between">
-                    {isSidebarOpen ? (
-                        <span className="text-xl font-bold tracking-tighter text-black">VAKALT<span className="text-gray-400 font-light">.ADMIN</span></span>
-                    ) : (
-                        <span className="text-xl font-bold tracking-tighter text-black">V</span>
-                    )}
-                    <button
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="lg:hidden text-gray-500"
-                    >
-                        <X size={20} />
-                    </button>
+                <div className="h-16 flex items-center px-6 border-b border-[#F3F4F6]">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-black text-sm">V</div>
+                        {isSidebarOpen && <span className="font-bold tracking-tight text-lg">Vakalt Hub</span>}
+                    </div>
                 </div>
 
-                <nav className="flex-1 px-4 py-8 space-y-2">
+                <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto hide-scrollbar">
                     {navItems.map((item) => {
-                        const isActive = location.pathname === item.path;
+                        const isActive = location.pathname.startsWith(item.path);
                         return (
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                                    ? "bg-black text-white shadow-lg shadow-black/10"
-                                    : "text-gray-500 hover:text-black hover:bg-gray-100"
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${isActive
+                                        ? "bg-[#F3F4F6] text-black"
+                                        : "text-gray-500 hover:bg-[#F9FAFB] hover:text-black"
                                     }`}
                             >
-                                <item.icon size={20} />
-                                {isSidebarOpen && <span className="font-semibold">{item.label}</span>}
+                                <item.icon size={20} className={`${isActive ? "text-black" : "text-gray-400 group-hover:text-black"} transition-colors`} />
+                                {isSidebarOpen && <span className="flex-1">{item.label}</span>}
+                                {isSidebarOpen && isActive && <div className="w-1 h-1 rounded-full bg-black"></div>}
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-gray-100 space-y-2">
+                <div className="p-3 border-t border-[#F3F4F6] space-y-1">
                     <Link
                         to="/"
                         target="_blank"
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-black hover:bg-gray-100 transition-all"
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-500 hover:text-black hover:bg-[#F9FAFB] rounded-xl transition-all"
                     >
-                        <ExternalLink size={20} />
-                        {isSidebarOpen && <span className="font-semibold">View Site</span>}
+                        <ExternalLink size={20} className="text-gray-400" />
+                        {isSidebarOpen && <span>Live Preview</span>}
                     </Link>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-semibold"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-xl transition-all"
                     >
                         <LogOut size={20} />
-                        {isSidebarOpen && <span>Logout</span>}
+                        {isSidebarOpen && <span>Sign Out</span>}
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
             <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-20"}`}>
-                <header className="h-20 border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-40">
-                    <div className="flex items-center gap-4">
+                <header className="h-16 border-b border-[#E5E7EB] px-8 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-40">
+                    <div className="flex items-center gap-6">
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 hover:bg-gray-100 rounded-lg transition-all text-gray-500"
+                            className="p-2 hover:bg-[#F3F4F6] rounded-lg text-gray-400 hover:text-black transition-all"
                         >
                             <Menu size={20} />
                         </button>
-                        <h2 className="text-lg font-bold text-black uppercase tracking-tight">
-                            {navItems.find(item => item.path === location.pathname)?.label || "Publication"}
-                        </h2>
+                        <div className="flex items-center gap-2 text-sm">
+                            <span className="text-gray-400">Workspace</span>
+                            <ChevronRight size={14} className="text-gray-300" />
+                            <span className="font-semibold text-black">
+                                {navItems.find(item => location.pathname.startsWith(item.path))?.label || "Publication"}
+                            </span>
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-full border border-gray-200 text-sm font-medium text-gray-600">
-                            <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
-                            Admin Active
+                        <div className="hidden sm:flex flex-col items-end mr-2">
+                            <span className="text-[11px] font-bold text-black uppercase tracking-wider">Mohan Sece</span>
+                            <span className="text-[10px] text-gray-400">System Admin</span>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
+                        <div className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center text-gray-400">
                             <User size={20} />
                         </div>
                     </div>

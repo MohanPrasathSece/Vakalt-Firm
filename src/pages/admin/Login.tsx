@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ShieldCheck, Lock, Mail, ArrowRight, Home } from 'lucide-react';
 import { toast } from 'sonner';
+import { ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -22,67 +22,57 @@ const Login = () => {
         if (error) {
             toast.error(error.message);
         } else {
-            toast.success("Identity Verified: Welcome to Command Center");
+            toast.success("Welcome back, Mohan");
             navigate('/admin/dashboard');
         }
         setLoading(false);
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center p-6 font-sans">
-            <div className="absolute top-10 left-10">
-                <Button
-                    variant="ghost"
-                    onClick={() => navigate('/')}
-                    className="text-gray-400 hover:text-black gap-2 transition-all group font-bold"
-                >
-                    <Home size={18} />
-                    Exit Workspace
-                </Button>
-            </div>
+        <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center p-6 font-sans">
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+                * { font-family: 'Inter', sans-serif !important; }
+            `}</style>
 
-            <div className="w-full max-w-md space-y-10">
-                <div className="text-center space-y-6">
-                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2.5rem] bg-black text-white mb-4 shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
-                        <ShieldCheck size={48} />
+            <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="text-center space-y-3">
+                    <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center text-white mx-auto shadow-2xl shadow-black/20 mb-6">
+                        <ShieldCheck size={32} />
                     </div>
-                    <div className="space-y-1">
-                        <h1 className="text-5xl font-black tracking-tighter text-black">VAKALT<span className="text-gray-200 font-light">.ADMIN</span></h1>
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Restricted Access Portal</p>
-                    </div>
+                    <h1 className="text-4xl font-black tracking-tighter text-black">VAKALT<span className="text-gray-300 font-light">.HUB</span></h1>
+                    <p className="text-sm text-gray-400 font-medium">Authoritative Content Management</p>
                 </div>
 
-                <div className="bg-white p-12 rounded-[3.5rem] border border-gray-100 shadow-[0_30px_100px_rgba(0,0,0,0.05)] relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-black to-transparent opacity-10"></div>
-
-                    <form onSubmit={handleLogin} className="space-y-10">
-                        <div className="space-y-6">
-                            <div className="space-y-3 group/field">
-                                <Label className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] pl-1">Authorized Email</Label>
-                                <div className="relative">
-                                    <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within/field:text-black transition-colors" />
+                <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/50">
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Identity (Email)</Label>
+                                <div className="relative group">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-black transition-colors" />
                                     <Input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                         placeholder="admin@vakalt.com"
-                                        className="h-16 bg-gray-50 border-gray-100 focus:border-black focus:ring-1 focus:ring-black text-black pl-14 rounded-2xl transition-all font-bold placeholder:text-gray-200"
+                                        className="h-14 bg-gray-50 border-gray-100 focus:border-black rounded-xl pl-12 font-bold transition-all"
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-3 group/field">
-                                <Label className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] pl-1">Passkey</Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within/field:text-black transition-colors" />
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Secure Passkey</Label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-black transition-colors" />
                                     <Input
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
                                         placeholder="••••••••"
-                                        className="h-16 bg-gray-50 border-gray-100 focus:border-black focus:ring-1 focus:ring-black text-black pl-14 rounded-2xl transition-all font-bold placeholder:text-gray-200"
+                                        className="h-14 bg-gray-50 border-gray-100 focus:border-black rounded-xl pl-12 font-bold transition-all"
                                     />
                                 </div>
                             </div>
@@ -91,16 +81,13 @@ const Login = () => {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-16 bg-black text-white hover:bg-gray-800 rounded-2xl font-black text-xl group transition-all shadow-2xl shadow-black/20"
+                            className="w-full h-14 bg-black text-white hover:bg-gray-800 rounded-xl font-bold text-lg group transition-all shadow-xl shadow-black/10 active:scale-95"
                         >
                             {loading ? (
-                                <div className="flex items-center gap-3">
-                                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                                    <span>Verifying Creds...</span>
-                                </div>
+                                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                             ) : (
-                                <div className="flex items-center justify-center gap-2">
-                                    Establish Link
+                                <div className="flex items-center gap-2">
+                                    Secure Entry
                                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                 </div>
                             )}
@@ -108,16 +95,15 @@ const Login = () => {
                     </form>
                 </div>
 
-                <div className="text-center pt-8">
-                    <p className="text-[9px] text-gray-300 uppercase tracking-[0.5em] font-black leading-relaxed">
-                        Secure Neural Link • 2026 Vakalt HQ<br />
-                        <span className="opacity-40 font-medium">All sessions are encrypted and logged</span>
-                    </p>
+                <div className="text-center pt-4">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="text-[10px] font-black uppercase tracking-widest text-gray-300 hover:text-black transition-colors"
+                    >
+                        ← Return to Live Site
+                    </button>
                 </div>
             </div>
-
-            {/* Design accents */}
-            <div className="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
         </div>
     );
 };

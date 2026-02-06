@@ -3,51 +3,66 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from "sonner";
 import {
     Search,
     Plus,
     Trash2,
-    Edit,
+    Edit3,
     ExternalLink,
+    MoreHorizontal,
     Filter,
-    MoreVertical,
-    ChevronLeft,
-    ChevronRight,
-    Eye,
-    FileText
+    ArrowUpRight,
+    Circle,
+    Tag,
+    X
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from '@/components/ui/label';
 
 const Posts = () => {
     const [posts, setPosts] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeFilter, setActiveFilter] = useState("All");
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+    const [showCategoryDialog, setShowCategoryDialog] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchPosts();
+        fetchCategories();
     }, []);
+
+    const fetchCategories = async () => {
+        const { data } = await supabase.from('categories').select('*').order('name');
+        if (data) setCategories(data);
+    };
 
     const fetchPosts = async () => {
         setLoading(true);
-        // PERFORMANCE OPTIMIZATION: Only fetch columns needed for the list view.
-        // This avoids downloading large 'content' fields for every single post.
         const { data, error } = await supabase
             .from('posts')
-            .select('id, title, slug, category, featured, created_at, read_time, image_url')
+            .select('id, title, slug, category, featured, status, created_at')
             .order('created_at', { ascending: false });
 
         if (error) {
-            toast.error("Failed to load posts");
+            toast.error("Failed to load publications");
         } else {
             setPosts(data || []);
         }
@@ -55,163 +70,220 @@ const Posts = () => {
     };
 
     const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this post?')) {
-            const { error } = await supabase.from('posts').delete().eq('id', id);
-            if (error) {
-                toast.error("Error deleting post");
-            } else {
-                toast.success("Post deleted successfully");
-                fetchPosts();
-            }
+        const { error } = await supabase.from('posts').delete().eq('id', id);
+        if (error) {
+            toast.error("Error deleting post");
+        } else {
+            toast.success("Publication archived");
+            fetchPosts();
         }
     };
 
-    const filteredPosts = posts.filter(post => {
-        const matchesSearch = (post.title?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-            (post.category?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-        const matchesFilter = activeFilter === "All" || post.category === activeFilter;
-        return matchesSearch && matchesFilter;
-    });
+    const handleAddCategory = async () => {
+        if (!newCategoryName.trim()) {
+            toast.error("Category name is required");
+            return;
+        }
+        const slug = newCategoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const { error } = await supabase.from('categories').insert([{ name: newCategoryName, slug }]);
+        if (error) {
+            toast.error("Error adding category");
+        } else {
+            toast.success("Category created");
+            setNewCategoryName("");
+            setShowCategoryDialog(false);
+            fetchCategories();
+        }
+    };
 
-    const categories = ["All", ...new Set(posts.map(p => p.category || 'Uncategorized'))];
+    const filtered = posts.filter(post => {
+        const matchesSearch = post.title?.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = selectedCategory === "all" ||
+            selectedCategory === "uncategorized" && (!post.category || post.category === "Uncategorized") ||
+            post.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
 
     return (
         <AdminLayout>
-            <div className="space-y-8 font-sans">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-8 animate-in fade-in duration-500">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight text-black mb-1">Publications</h1>
-                        <p className="text-gray-500 font-medium text-sm">Organize and manage your legal insights.</p>
+                        <h1 className="text-3xl font-extrabold tracking-tight text-black">Publications</h1>
+                        <p className="text-gray-500 mt-1">Manage and monitor your legal briefed insights.</p>
                     </div>
                     <Button
                         onClick={() => navigate('/admin/posts/new')}
-                        className="bg-black text-white hover:bg-gray-800 rounded-xl h-14 px-8 font-bold gap-2 shadow-xl shadow-black/10 transition-all active:scale-95"
+                        className="bg-black text-white hover:bg-gray-800 rounded-xl px-6 h-12 font-semibold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
                     >
-                        <Plus size={20} />
-                        Create New Post
+                        <Plus size={18} /> New Article
                     </Button>
                 </div>
 
-                {/* Filters & Search */}
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="relative flex-1 group">
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-black transition-colors" />
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <div className="relative flex-1 group w-full">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-black transition-colors" />
                         <Input
+                            placeholder="Find publications..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search articles..."
-                            className="pl-12 h-14 bg-white border-gray-200 focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-gray-400 rounded-2xl shadow-sm transition-all"
+                            className="bg-white border-gray-200 pl-11 h-12 rounded-xl focus:ring-1 focus:ring-black focus:border-black transition-all"
                         />
                     </div>
-                    <div className="flex gap-2">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="h-14 border-gray-200 bg-white px-6 rounded-2xl gap-3 hover:bg-gray-50 text-gray-600 font-bold hover:text-black shadow-sm transition-all">
-                                    <Filter size={18} />
-                                    {activeFilter}
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="bg-white border-gray-100 text-gray-900 rounded-xl shadow-2xl p-2 min-w-[200px]">
-                                {categories.map(cat => (
-                                    <DropdownMenuItem
-                                        key={cat}
-                                        onClick={() => setActiveFilter(cat)}
-                                        className="hover:bg-gray-50 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold"
-                                    >
-                                        {cat}
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="h-12 rounded-xl border-gray-200 font-medium px-6 gap-2 hover:bg-white hover:border-black transition-all">
+                                <Filter size={18} />
+                                {selectedCategory === "all" ? "All Categories" :
+                                    selectedCategory === "uncategorized" ? "Uncategorized" :
+                                        categories.find(c => c.name === selectedCategory)?.name || "Category"}
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56 rounded-xl border-gray-100 shadow-xl p-2">
+                            <DropdownMenuItem
+                                className="rounded-lg font-semibold py-2 cursor-pointer"
+                                onClick={() => setSelectedCategory("all")}
+                            >
+                                All Categories
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className="rounded-lg font-semibold py-2 cursor-pointer"
+                                onClick={() => setSelectedCategory("uncategorized")}
+                            >
+                                Uncategorized
+                            </DropdownMenuItem>
+                            {categories.map((cat) => (
+                                <DropdownMenuItem
+                                    key={cat.id}
+                                    className="rounded-lg font-semibold py-2 cursor-pointer"
+                                    onClick={() => setSelectedCategory(cat.name)}
+                                >
+                                    {cat.name}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="h-12 rounded-xl border-gray-200 font-medium px-6 gap-2 hover:bg-white hover:border-black transition-all">
+                                <Tag size={18} /> Add Category
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md rounded-3xl">
+                            <DialogHeader>
+                                <DialogTitle className="text-xl font-bold">Create New Category</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 pt-4">
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-bold">Category Name</Label>
+                                    <Input
+                                        placeholder="e.g., Corporate Law"
+                                        value={newCategoryName}
+                                        onChange={(e) => setNewCategoryName(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
+                                        className="h-12 rounded-xl"
+                                        autoFocus
+                                    />
+                                </div>
+                                <div className="flex gap-2 justify-end">
+                                    <Button variant="outline" onClick={() => setShowCategoryDialog(false)} className="rounded-xl">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleAddCategory} className="bg-black text-white hover:bg-gray-800 rounded-xl">
+                                        Create Category
+                                    </Button>
+                                </div>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
-                {/* Posts Table */}
-                <div className="bg-white border border-gray-200 rounded-[2rem] overflow-hidden shadow-xl shadow-gray-200/40">
+                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm shadow-gray-100">
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full text-sm text-left border-collapse">
                             <thead>
-                                <tr className="text-gray-400 text-[10px] uppercase font-bold tracking-[0.2em] border-b border-gray-100 bg-gray-50/50">
-                                    <th className="px-8 py-6">Publication Name</th>
-                                    <th className="px-8 py-6">Category</th>
-                                    <th className="px-8 py-6">Status</th>
-                                    <th className="px-8 py-6">Date Published</th>
-                                    <th className="px-8 py-6 text-right">Actions</th>
+                                <tr className="bg-gray-50/50 border-b border-gray-100">
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest">Publication Details</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest">Classification</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest text-center">Visibility</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest">Date</th>
+                                    <th className="px-6 py-4"></th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={5} className="px-8 py-32 text-center">
-                                            <div className="flex flex-col items-center gap-4">
-                                                <div className="w-10 h-10 border-4 border-gray-100 border-t-black rounded-full animate-spin"></div>
-                                                <span className="text-gray-400 font-bold text-xs uppercase tracking-widest">Synchronizing...</span>
+                                        <td colSpan={5} className="py-20 text-center">
+                                            <div className="flex flex-col items-center gap-2">
+                                                <div className="w-6 h-6 border-2 border-gray-100 border-t-black rounded-full animate-spin"></div>
+                                                <span className="text-gray-400 font-medium animate-pulse">Syncing insights...</span>
                                             </div>
                                         </td>
                                     </tr>
-                                ) : filteredPosts.map((post) => (
-                                    <tr key={post.id} className="hover:bg-gray-50/50 transition-all group">
-                                        <td className="px-8 py-7">
-                                            <div className="flex items-center gap-5">
-                                                <div className="w-14 h-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0 group-hover:bg-white transition-colors">
-                                                    {post.image_url ? (
-                                                        <img src={post.image_url} alt="" className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <FileText size={24} className="text-gray-300" />
-                                                    )}
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="font-black text-gray-900 group-hover:text-black transition-colors line-clamp-1 text-lg tracking-tight">{post.title}</span>
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.1em]">{post.read_time || '3 min read'}</span>
-                                                </div>
+                                ) : filtered.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="py-20 text-center text-gray-400 font-medium">No publications found.</td>
+                                    </tr>
+                                ) : filtered.map((post) => (
+                                    <tr key={post.id} className="hover:bg-gray-50/50 transition-colors group">
+                                        <td className="px-6 py-5">
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className="font-bold text-black group-hover:text-black transition-colors">{post.title}</span>
+                                                <span className="text-gray-400 text-xs font-mono">/insights/{post.slug}</span>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-7">
-                                            <span className="px-4 py-1.5 bg-gray-100 border border-gray-200 rounded-full text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                                        <td className="px-6 py-5">
+                                            <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-[11px] font-bold">
                                                 {post.category || 'Uncategorized'}
                                             </span>
                                         </td>
-                                        <td className="px-8 py-7">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-2.5 h-2.5 rounded-full ${post.featured ? 'bg-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.5)]' : 'bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.3)]'}`}></div>
-                                                <span className="text-xs font-bold text-gray-700 uppercase tracking-tight">{post.featured ? 'Featured' : 'Published'}</span>
+                                        <td className="px-6 py-5">
+                                            <div className="flex justify-center">
+                                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-wider ${post.status === 'published'
+                                                    ? 'bg-green-50 text-green-600 border border-green-100'
+                                                    : 'bg-orange-50 text-orange-600 border border-orange-100'
+                                                    }`}>
+                                                    <Circle size={8} fill="currentColor" />
+                                                    {post.status || 'published'}
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-7 text-sm font-bold text-gray-400 tabular-nums">
-                                            {new Date(post.created_at).toLocaleDateString(undefined, {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })}
+                                        <td className="px-6 py-5 text-gray-500 font-medium">
+                                            {new Date(post.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </td>
-                                        <td className="px-8 py-7 text-right">
-                                            <div className="flex items-center justify-end gap-3">
+                                        <td className="px-6 py-5 text-right">
+                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Button
-                                                    variant="ghost"
+                                                    variant="outline"
                                                     size="icon"
-                                                    className="w-11 h-11 bg-white border border-gray-200 hover:bg-black hover:text-white transition-all rounded-xl shadow-sm"
+                                                    className="w-9 h-9 rounded-lg border-gray-200 hover:border-black transition-all"
                                                     onClick={() => navigate(`/admin/posts/${post.id}`)}
                                                 >
-                                                    <Edit size={18} />
+                                                    <Edit3 size={16} />
                                                 </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    size="icon"
+                                                    className="w-9 h-9 rounded-lg border-gray-200 hover:text-blue-600 hover:border-blue-200 transition-all"
+                                                    onClick={() => window.open(`/insights/${post.slug}`, '_blank')}
+                                                >
+                                                    <ArrowUpRight size={16} />
+                                                </Button>
+
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="w-11 h-11 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl shadow-sm">
-                                                            <MoreVertical size={18} />
+                                                        <Button variant="ghost" size="icon" className="w-9 h-9 rounded-lg hover:bg-gray-100">
+                                                            <MoreHorizontal size={16} />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="bg-white border-gray-100 text-gray-900 rounded-xl shadow-2xl p-2 min-w-[180px]">
+                                                    <DropdownMenuContent align="end" className="w-40 rounded-xl border-gray-100 shadow-xl p-1">
                                                         <DropdownMenuItem
-                                                            className="hover:bg-gray-50 cursor-pointer gap-3 rounded-lg px-4 py-2 font-semibold"
-                                                            onClick={() => window.open(`/insights/${post.slug}`, '_blank')}
-                                                        >
-                                                            <Eye size={16} className="text-gray-400" /> View Live
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            className="hover:bg-red-50 text-red-600 cursor-pointer gap-3 rounded-lg px-4 py-2 font-semibold"
+                                                            className="text-red-500 focus:text-red-600 focus:bg-red-50 rounded-lg font-semibold py-2 cursor-pointer gap-2"
                                                             onClick={() => handleDelete(post.id)}
                                                         >
-                                                            <Trash2 size={16} /> Mark for Removal
+                                                            <Trash2 size={14} /> Archive Post
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -219,28 +291,6 @@ const Posts = () => {
                                         </td>
                                     </tr>
                                 ))}
-                                {filteredPosts.length === 0 && !loading && (
-                                    <tr>
-                                        <td colSpan={5} className="px-8 py-40 text-center">
-                                            <div className="flex flex-col items-center gap-6">
-                                                <div className="p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100">
-                                                    <Search size={48} className="text-gray-200" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-xl font-black text-gray-900 tracking-tight">No results found</p>
-                                                    <p className="text-gray-400 font-medium">Try broader search terms or clear filters.</p>
-                                                </div>
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() => { setSearchQuery(""); setActiveFilter("All") }}
-                                                    className="h-12 border-gray-200 hover:bg-black hover:text-white px-8 rounded-xl font-bold transition-all"
-                                                >
-                                                    Reset all filters
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
                             </tbody>
                         </table>
                     </div>

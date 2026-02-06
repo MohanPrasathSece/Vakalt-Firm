@@ -8,6 +8,7 @@ import Insights from "./pages/Insights";
 import PostDetail from "./pages/PostDetail";
 import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
+import CourtFeeCalculator from "./pages/CourtFeeCalculator";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<PostDetail />} />
           <Route path="/tools" element={<Tools />} />
+          <Route path="/tools/court-fee-calculator" element={<CourtFeeCalculator />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

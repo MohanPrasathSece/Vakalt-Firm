@@ -211,18 +211,6 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Full Width Map Section */}
-      <section className="h-[500px] w-full filter grayscale hover:grayscale-0 transition-all duration-700">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.667825567389!2d77.06366577626966!3d28.70059368099863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d068593361555%3A0x6b772072e5058882!2sBegumpur%2C%20Rohini%2C%20Delhi%2C%20110086!5e0!3m2!1sen!2sin!4v1708150000000!5m2!1sen!2sin"
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </section>
 
       <Footer />
     </main>

@@ -1,26 +1,28 @@
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 import {
     Plus,
     Trash2,
-    Edit,
-    Search,
+    Edit2,
+    Save,
+    X,
     Hash,
+    Layers,
+    ChevronRight,
     AlertCircle
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { toast } from "sonner";
 
 const Categories = () => {
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [newCatName, setNewCatName] = useState("");
+    const [newName, setNewName] = useState("");
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [editName, setEditName] = useState("");
+    const [editValue, setEditValue] = useState("");
 
     useEffect(() => {
         fetchCategories();
@@ -28,207 +30,147 @@ const Categories = () => {
 
     const fetchCategories = async () => {
         setLoading(true);
-        // We fetch from 'posts' to see used categories, 
-        // but ideally we fetch from a 'categories' table.
-        // For now, let's assume a 'categories' table exists.
-        const { data, error } = await supabase
-            .from('categories')
-            .select('*')
-            .order('name', { ascending: true });
-
-        if (error) {
-            console.error(error);
-            // If table doesn't exist, we might get an error.
-            // I'll remind the user to create it.
-        } else {
-            setCategories(data || []);
-        }
+        const { data, error } = await supabase.from('categories').select('*').order('name');
+        if (error) toast.error("Failed to load categories");
+        else setCategories(data || []);
         setLoading(false);
     };
 
-    const generateSlug = (text: string) => {
-        return text.toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)+/g, '');
+    const handleAdd = async () => {
+        if (!newName.trim()) return;
+        const slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const { error } = await supabase.from('categories').insert([{ name: newName, slug }]);
+        if (error) toast.error("Error adding category");
+        else {
+            toast.success("Category created");
+            setNewName("");
+            fetchCategories();
+        }
     };
 
-    const handleAdd = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newCatName.trim()) return;
-
-        const slug = generateSlug(newCatName);
-        const { error } = await supabase
-            .from('categories')
-            .insert([{ name: newCatName.trim(), slug }]);
-
-        if (error) {
-            toast.error("Category already exists or error occurred.");
-        } else {
-            toast.success("Category added.");
-            setNewCatName("");
+    const handleDelete = async (id: string) => {
+        const { error } = await supabase.from('categories').delete().eq('id', id);
+        if (error) toast.error("Error deleting");
+        else {
+            toast.success("Category removed");
             fetchCategories();
         }
     };
 
     const handleUpdate = async (id: string) => {
-        const slug = generateSlug(editName);
-        const { error } = await supabase
-            .from('categories')
-            .update({ name: editName.trim(), slug })
-            .eq('id', id);
-
-        if (error) {
-            toast.error("Error updating category.");
-        } else {
-            toast.success("Category updated.");
+        const slug = editValue.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const { error } = await supabase.from('categories').update({ name: editValue, slug }).eq('id', id);
+        if (error) toast.error("Update failed");
+        else {
+            toast.success("Taxonomy updated");
             setEditingId(null);
             fetchCategories();
         }
     };
 
-    const handleDelete = async (id: string, name: string) => {
-        if (confirm(`Delete "${name}"? This won't delete posts, but they may become uncategorized.`)) {
-            const { error } = await supabase.from('categories').delete().eq('id', id);
-            if (error) {
-                toast.error("Error deleting category.");
-            } else {
-                toast.success("Category removed.");
-                fetchCategories();
-            }
-        }
-    };
-
-    const filtered = categories.filter(c =>
-        c.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     return (
         <AdminLayout>
-            <div className="space-y-8 font-sans">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="max-w-4xl space-y-10 animate-in fade-in duration-500">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight text-black mb-1">Taxonomy</h1>
-                        <p className="text-gray-500 font-medium text-sm">Manage global blog categories.</p>
+                        <h1 className="text-3xl font-extrabold tracking-tight text-black">Taxonomy</h1>
+                        <p className="text-gray-500 mt-1 text-sm font-medium">Categorize and organize your legal insights.</p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Add New Category */}
-                    <div className="lg:col-span-4">
-                        <div className="bg-white border border-gray-200 p-8 rounded-[2rem] shadow-sm sticky top-28">
-                            <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-6 flex items-center gap-2">
-                                <Plus size={14} /> New Category
-                            </h3>
-                            <form onSubmit={handleAdd} className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    <div className="lg:col-span-5 space-y-6">
+                        <div className="bg-white border border-[#E5E7EB] p-8 rounded-3xl shadow-sm space-y-6">
+                            <div className="flex items-center gap-2 border-b border-[#F3F4F6] pb-4 text-black">
+                                <Layers size={18} />
+                                <h3 className="font-bold">Add Category</h3>
+                            </div>
+                            <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider pl-1 font-sans">Category Name</label>
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest pl-1">Name</label>
                                     <Input
-                                        value={newCatName}
-                                        onChange={(e) => setNewCatName(e.target.value)}
-                                        placeholder="e.g. Litigation Finance"
-                                        className="h-12 bg-gray-50 border-gray-100 rounded-xl font-bold placeholder:text-gray-200"
+                                        placeholder="e.g., Corporate Law"
+                                        value={newName}
+                                        onChange={(e) => setNewName(e.target.value)}
+                                        className="h-12 bg-gray-50/50 rounded-xl"
                                     />
                                 </div>
-                                <Button
-                                    type="submit"
-                                    className="w-full h-12 bg-black text-white hover:bg-gray-800 rounded-xl font-bold shadow-lg shadow-black/10"
-                                >
-                                    Add to Library
+                                <Button onClick={handleAdd} className="w-full bg-black text-white hover:bg-gray-800 h-12 rounded-xl font-bold gap-2 shadow-xl shadow-black/5 transition-all active:scale-95">
+                                    <Plus size={18} /> Create Category
                                 </Button>
-                            </form>
-                            <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-3">
-                                <AlertCircle size={18} className="text-blue-500 shrink-0" />
-                                <p className="text-[10px] text-blue-600 font-bold uppercase tracking-wider leading-relaxed">
-                                    Slugs are automatically generated for URL compatibility.
-                                </p>
                             </div>
+                        </div>
+
+                        <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl flex gap-4">
+                            <AlertCircle size={20} className="text-blue-500 shrink-0 mt-0.5" />
+                            <p className="text-xs text-blue-700 leading-relaxed font-medium">
+                                <strong>Note:</strong> Renaming or deleting categories will reflect across the public Insights page instantly. Posts in deleted categories will display as "Uncategorized".
+                            </p>
                         </div>
                     </div>
 
-                    {/* Category List */}
-                    <div className="lg:col-span-8">
-                        <div className="bg-white border border-gray-200 rounded-[2rem] shadow-xl shadow-gray-200/40 overflow-hidden">
-                            <div className="p-6 border-b border-gray-50 bg-gray-50/50">
-                                <div className="relative group">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-black transition-colors" />
-                                    <Input
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Filter categories..."
-                                        className="pl-12 h-12 bg-white border-gray-100 rounded-xl text-sm"
-                                    />
+                    <div className="lg:col-span-7">
+                        <div className="bg-white border border-[#E5E7EB] rounded-3xl shadow-sm overflow-hidden">
+                            <div className="p-6 border-b border-[#F3F4F6] bg-gray-50/50">
+                                <div className="flex items-center gap-2 text-gray-500 uppercase text-[10px] font-black tracking-widest pl-2">
+                                    <Hash size={14} /> Available Classifications
                                 </div>
                             </div>
-
-                            <div className="divide-y divide-gray-50">
+                            <div className="divide-y divide-[#F3F4F6]">
                                 {loading ? (
-                                    <div className="p-20 text-center">
-                                        <div className="w-8 h-8 border-4 border-gray-100 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Loading Library...</span>
-                                    </div>
-                                ) : filtered.map((cat) => (
-                                    <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-all group">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all">
-                                                <Hash size={18} />
-                                            </div>
-                                            {editingId === cat.id ? (
-                                                <Input
-                                                    value={editName}
-                                                    onChange={(e) => setEditName(e.target.value)}
-                                                    className="h-10 bg-white border-black/10 rounded-lg font-bold min-w-[200px]"
-                                                    autoFocus
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') handleUpdate(cat.id);
-                                                        if (e.key === 'Escape') setEditingId(null);
-                                                    }}
-                                                />
-                                            ) : (
-                                                <div className="flex flex-col">
-                                                    <span className="font-black text-gray-900 text-lg tracking-tight">{cat.name}</span>
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">/{cat.slug}</span>
+                                    <div className="p-20 text-center"><div className="w-6 h-6 border-2 border-gray-100 border-t-black rounded-full animate-spin mx-auto"></div></div>
+                                ) : (
+                                    <>
+                                        {/* Uncategorized - Always shown */}
+                                        <div className="p-6 flex items-center justify-between bg-gray-50/30">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-2 h-2 rounded-full bg-gray-300"></div>
+                                                    <span className="font-bold text-gray-600">Uncategorized</span>
+                                                    <span className="text-[10px] text-gray-400 font-mono tracking-tight bg-gray-100 px-2 py-0.5 rounded">/uncategorized</span>
+                                                    <span className="text-[9px] text-gray-400 uppercase tracking-wider font-black ml-2">(Default)</span>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
 
-                                        <div className="flex items-center gap-2">
-                                            {editingId === cat.id ? (
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() => handleUpdate(cat.id)}
-                                                    className="bg-black text-white rounded-lg h-9 px-4 font-bold"
-                                                >
-                                                    Save
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => {
-                                                        setEditingId(cat.id);
-                                                        setEditName(cat.name);
-                                                    }}
-                                                    className="w-10 h-10 bg-white border border-gray-100 hover:bg-black hover:text-white rounded-xl shadow-sm transition-all"
-                                                >
-                                                    <Edit size={16} />
-                                                </Button>
-                                            )}
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handleDelete(cat.id, cat.name)}
-                                                className="w-10 h-10 bg-white border border-gray-100 hover:bg-red-50 hover:text-red-500 rounded-xl shadow-sm transition-all"
-                                            >
-                                                <Trash2 size={16} />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
-                                {!loading && filtered.length === 0 && (
-                                    <div className="p-20 text-center opacity-30">
-                                        <Hash size={48} className="mx-auto mb-4" />
-                                        <p className="font-black uppercase tracking-widest text-xs">Library Empty</p>
-                                    </div>
+                                        {/* User-created categories */}
+                                        {categories.length === 0 ? (
+                                            <div className="p-20 text-center text-gray-400 font-medium italic">No custom categories defined yet.</div>
+                                        ) : categories.map((cat) => (
+                                            <div key={cat.id} className="p-6 flex items-center justify-between hover:bg-[#F9FAFB] transition-colors group">
+                                                <div className="flex-1">
+                                                    {editingId === cat.id ? (
+                                                        <div className="flex items-center gap-2 max-w-sm animate-in fade-in slide-in-from-left-2 duration-300">
+                                                            <Input
+                                                                value={editValue}
+                                                                onChange={(e) => setEditValue(e.target.value)}
+                                                                className="h-10 bg-white border-black rounded-lg font-bold"
+                                                                autoFocus
+                                                            />
+                                                            <Button variant="outline" size="icon" onClick={() => handleUpdate(cat.id)} className="shrink-0 rounded-lg hover:border-black"><Save size={16} /></Button>
+                                                            <Button variant="ghost" size="icon" onClick={() => setEditingId(null)} className="shrink-0 rounded-lg"><X size={16} /></Button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-2 h-2 rounded-full bg-gray-200"></div>
+                                                            <span className="font-bold text-black">{cat.name}</span>
+                                                            <span className="text-[10px] text-gray-400 font-mono tracking-tight bg-gray-50 px-2 py-0.5 rounded">/{cat.slug}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {editingId !== cat.id && (
+                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-400 hover:text-black hover:bg-white border hover:border-gray-200 rounded-lg transition-all" onClick={() => { setEditingId(cat.id); setEditValue(cat.name); }}>
+                                                            <Edit2 size={14} />
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border hover:border-red-100 rounded-lg transition-all" onClick={() => handleDelete(cat.id)}>
+                                                            <Trash2 size={14} />
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </>
                                 )}
                             </div>
                         </div>
