@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
@@ -11,7 +10,8 @@ import {
     X,
     ExternalLink,
     ChevronRight,
-    User
+    User,
+    Briefcase
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -44,6 +44,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
         { label: "Blog Posts", icon: FileText, path: "/admin/posts" },
         { label: "Categories", icon: Settings, path: "/admin/categories" },
+        { label: "Careers", icon: Briefcase, path: "/admin/careers" },
     ];
 
     if (loading) {
@@ -94,8 +95,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                                 key={item.path}
                                 to={item.path}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${isActive
-                                        ? "bg-[#F3F4F6] text-black"
-                                        : "text-gray-500 hover:bg-[#F9FAFB] hover:text-black"
+                                    ? "bg-[#F3F4F6] text-black"
+                                    : "text-gray-500 hover:bg-[#F9FAFB] hover:text-black"
                                     }`}
                             >
                                 <item.icon size={20} className={`${isActive ? "text-black" : "text-gray-400 group-hover:text-black"} transition-colors`} />
