@@ -35,17 +35,41 @@ const Footer = () => {
           </div>
 
           {/* Navigation */}
-          <div className="lg:col-span-3 lg:col-start-7">
+          {/* Navigation */}
+          <div className="lg:col-span-2 lg:col-start-6">
             <ScrollReveal delay={0.1}>
               <h4 className="text-serif text-lg font-bold text-background mb-6">Menu</h4>
               <ul className="space-y-2">
                 {[
                   { label: "Home", href: "/" },
                   { label: "Insights", href: "/insights" },
-                  { label: "Tools", href: "/tools" },
                   { label: "Contact", href: "/contact" },
                 ].map((link) => (
                   <li key={link.href}>
+                    <Link
+                      to={link.href}
+                      className="text-sans text-sm text-background/60 hover:text-background transition-all hover:translate-x-1 inline-block"
+                      onClick={() => window.scrollTo(0, 0)}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </ScrollReveal>
+          </div>
+
+          {/* Legal Tools */}
+          <div className="lg:col-span-2">
+            <ScrollReveal delay={0.15}>
+              <h4 className="text-serif text-lg font-bold text-background mb-6">Legal Tools</h4>
+              <ul className="space-y-2">
+                {[
+                  { label: "Fee Calculator", href: "/tools" },
+                  { label: "Doc Checklist", href: "/tools" },
+                  { label: "Case Prep", href: "/tools" },
+                ].map((link) => (
+                  <li key={link.label}>
                     <Link
                       to={link.href}
                       className="text-sans text-sm text-background/60 hover:text-background transition-all hover:translate-x-1 inline-block"
@@ -84,9 +108,12 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-background/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-background/40">
           <p>© {currentYear} Vakalt - All Rights Reserved.</p>
-          <p>
-            Developed by <a href="https://www.zyradigitals.com" target="_blank" rel="noopener noreferrer" className="text-background/60 hover:text-background transition-colors font-medium">Zyra Digitals</a>
-          </p>
+          <div className="flex items-center gap-6">
+            <Link to="/admin" className="hover:text-background transition-colors">Admin</Link>
+            <p>
+              Developed by <a href="https://www.zyradigitals.com" target="_blank" rel="noopener noreferrer" className="text-background/60 hover:text-background transition-colors font-medium">Zyra Digitals</a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

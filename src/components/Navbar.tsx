@@ -217,7 +217,28 @@ const Navbar = () => {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="lg:hidden fixed inset-0 bg-surface-dark z-[100] flex flex-col justify-center items-center"
           >
-            <div className="flex flex-col items-center gap-8">
+            <div className="flex flex-col items-center gap-8 relative">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute -top-32 right-0 p-4 text-surface-dark-foreground/50 hover:text-surface-dark-foreground transition-colors"
+              >
+                <span className="sr-only">Close menu</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-8 h-8"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.href}

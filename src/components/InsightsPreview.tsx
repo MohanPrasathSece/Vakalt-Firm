@@ -1,38 +1,63 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScrollReveal from "./ScrollReveal";
+import { supabase } from "@/lib/supabase";
 
-const articles = [
+const fallbackArticles = [
   {
     title: "Understanding Civil Litigation Timelines in 2025",
     category: "Civil Litigation",
-    date: "Jan 28, 2025",
-    readTime: "6 min",
+    created_at: "2025-01-28",
+    read_time: "6 min",
+    slug: "civil-litigation-timelines"
   },
   {
     title: "Corporate Governance: Key Compliance Updates",
     category: "Corporate Law",
-    date: "Jan 15, 2025",
-    readTime: "8 min",
+    created_at: "2025-01-15",
+    read_time: "8 min",
+    slug: "corporate-governance-updates"
   },
   {
     title: "Navigating Property Disputes: A Modern Guide",
     category: "Real Estate",
-    date: "Jan 5, 2025",
-    readTime: "5 min",
+    created_at: "2025-01-05",
+    read_time: "5 min",
+    slug: "property-disputes-guide"
   },
   {
     title: "Intellectual Property Protection in the Digital Age",
     category: "IP Law",
-    date: "Dec 20, 2024",
-    readTime: "7 min",
+    created_at: "2024-12-20",
+    read_time: "7 min",
+    slug: "ip-protection-digital"
   },
 ];
 
 const InsightsPreview = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [articles, setArticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLatest = async () => {
+      const { data } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(4);
+
+      if (data && data.length > 0) {
+        setArticles(data);
+      } else {
+        setArticles(fallbackArticles);
+      }
+    };
+
+    fetchLatest();
+  }, []);
 
   return (
     <section className="bg-background py-28 lg:py-40">
@@ -56,9 +81,9 @@ const InsightsPreview = () => {
 
         <div>
           {articles.map((article, i) => (
-            <ScrollReveal key={article.title} delay={i * 0.05}>
+            <ScrollReveal key={article.id || article.title} delay={i * 0.05}>
               <Link
-                to="/insights"
+                to={`/insights/${article.slug}`}
                 className="group block border-t border-border last:border-b"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
@@ -71,11 +96,15 @@ const InsightsPreview = () => {
                       </span>
                       <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
                       <span className="text-sans text-label text-muted-foreground/40">
-                        {article.date}
+                        {new Date(article.created_at).toLocaleDateString(undefined, {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
                       </span>
                       <span className="w-1 h-1 rounded-full bg-muted-foreground/30 hidden sm:block" />
                       <span className="text-sans text-label text-muted-foreground/40 hidden sm:block">
-                        {article.readTime}
+                        {article.read_time}
                       </span>
                     </div>
                     <h3 className="text-serif text-heading font-semibold text-foreground group-hover:translate-x-3 transition-transform duration-500">
