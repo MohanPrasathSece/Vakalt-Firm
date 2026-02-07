@@ -24,30 +24,26 @@ interface CourtVCLink {
     additional_info: string;
 }
 
+import { useQuery } from '@tanstack/react-query';
+
 const CourtVCLinks = () => {
-    const [vcLinks, setVcLinks] = useState<CourtVCLink[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterCourtType, setFilterCourtType] = useState<string>("all");
     const [filterState, setFilterState] = useState<string>("all");
 
-    useEffect(() => {
-        fetchVCLinks();
-    }, []);
+    const { data: vcLinks = [], isLoading: loading } = useQuery({
+        queryKey: ['court_vc_links'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('court_vc_links')
+                .select('*')
+                .eq('is_active', true)
+                .order('judge_name', { ascending: true });
 
-    const fetchVCLinks = async () => {
-        setLoading(true);
-        const { data, error } = await supabase
-            .from('court_vc_links')
-            .select('*')
-            .eq('is_active', true)
-            .order('judge_name', { ascending: true });
-
-        if (!error && data) {
-            setVcLinks(data);
-        }
-        setLoading(false);
-    };
+            if (error) throw error;
+            return data;
+        },
+    });
 
     const filtered = vcLinks.filter(link => {
         const matchesSearch = link.judge_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -87,7 +83,7 @@ const CourtVCLinks = () => {
                         <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
                             <Video size={16} /> Virtual Court Access
                         </p>
-                        <h1 className="text-serif text-display font-bold text-white mb-8">
+                        <h1 className="text-serif text-display-sm font-bold text-white mb-8 select-none">
                             Court VC Links
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">

@@ -13,29 +13,25 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { useQuery } from '@tanstack/react-query';
+
 const CareersPage = () => {
-    const [careers, setCareers] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [filterType, setFilterType] = useState<string>("all");
     const [selectedCareer, setSelectedCareer] = useState<any>(null);
 
-    useEffect(() => {
-        fetchCareers();
-    }, []);
+    const { data: careers = [], isLoading: loading } = useQuery({
+        queryKey: ['careers'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('careers')
+                .select('*')
+                .eq('status', 'active')
+                .order('created_at', { ascending: false });
 
-    const fetchCareers = async () => {
-        setLoading(true);
-        const { data, error } = await supabase
-            .from('careers')
-            .select('*')
-            .eq('status', 'active')
-            .order('created_at', { ascending: false });
-
-        if (!error && data) {
-            setCareers(data);
-        }
-        setLoading(false);
-    };
+            if (error) throw error;
+            return data;
+        },
+    });
 
     const filtered = careers.filter(career =>
         filterType === "all" || career.type === filterType
@@ -54,7 +50,7 @@ const CareersPage = () => {
             <Navbar />
 
             {/* Hero Section */}
-            <section className="bg-slate-900 pt-32 pb-12 lg:pt-40 lg:pb-16 section-dark">
+            <section className="bg-black pt-32 pb-12 lg:pt-40 lg:pb-16 section-dark">
                 <div className="container mx-auto px-6 lg:px-12">
                     <ScrollReveal>
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -62,13 +58,27 @@ const CareersPage = () => {
                                 <h1 className="text-serif text-display-sm font-bold text-white mb-4">
                                     Career Opportunities
                                 </h1>
-                                <p className="text-sans text-sm text-slate-400 max-w-xl font-medium">
-                                    Join our team of legal professionals. We are seeking talented individuals to help us redefine legal research and litigation support.
+                                <p className="text-sans text-sm text-slate-400 max-w-xl font-medium mb-8">
+                                    Join our team or post an opportunity. We connect legal professionals with top law firms and companies.
                                 </p>
+                                <div className="flex gap-4">
+                                    <Button
+                                        onClick={() => window.location.href = '/careers/submit'}
+                                        className="bg-white text-black hover:bg-gray-200 font-bold uppercase text-xs tracking-widest px-6 py-3 rounded-none"
+                                    >
+                                        Post a Job
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        className="border-white/20 text-white hover:bg-white/10 font-bold uppercase text-xs tracking-widest px-6 py-3 rounded-none"
+                                    >
+                                        View Openings
+                                    </Button>
+                                </div>
                             </div>
                             <div className="hidden md:block">
                                 <p className="text-[10px] font-bold text-white uppercase tracking-widest bg-white/10 px-3 py-1 border border-white/20 rounded">
-                                    {careers.length} Positions Available
+                                    {careers.filter((c: any) => !c.application_deadline || new Date(c.application_deadline) > new Date()).length} Openings
                                 </p>
                             </div>
                         </div>
@@ -77,7 +87,7 @@ const CareersPage = () => {
             </section>
 
             {/* Filter Section */}
-            <section className="bg-slate-50 py-6 sticky top-20 z-10 border-b border-border shadow-sm">
+            <section className="bg-zinc-50 py-6 sticky top-20 z-10 border-b border-border shadow-sm">
                 <div className="container mx-auto px-6 lg:px-12">
                     <div className="flex gap-2 lg:gap-3 flex-wrap">
                         <button
@@ -126,7 +136,7 @@ const CareersPage = () => {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {filtered.map((career, index) => (
+                            {filtered.filter(career => !career.application_deadline || new Date(career.application_deadline) > new Date()).map((career, index) => (
                                 <ScrollReveal key={career.id} delay={index * 0.05}>
                                     <Dialog>
                                         <DialogTrigger asChild>
@@ -135,7 +145,7 @@ const CareersPage = () => {
                                                 className="bg-white border border-border p-5 lg:p-6 hover:border-foreground hover:shadow-md transition-all duration-300 group cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-6"
                                             >
                                                 <div className="flex items-start gap-4 flex-1">
-                                                    <div className={`p-2.5 rounded shrink-0 ${career.type === 'job' ? 'bg-slate-100' : 'bg-slate-50'}`}>
+                                                    <div className={`p-2.5 rounded shrink-0 ${career.type === 'job' ? 'bg-zinc-100' : 'bg-zinc-50'}`}>
                                                         {career.type === 'job' ?
                                                             <Briefcase size={18} className="text-foreground" /> :
                                                             <GraduationCap size={18} className="text-foreground" />
@@ -177,7 +187,7 @@ const CareersPage = () => {
                                                         <p className="text-[11px] font-bold text-foreground">{formatDate(career.created_at)}</p>
                                                     </div>
                                                     <div className="h-8 w-px bg-border hidden md:block"></div>
-                                                    <button className="text-sans text-[10px] font-black uppercase tracking-widest bg-slate-50 group-hover:bg-foreground group-hover:text-background px-6 py-3 border border-border group-hover:border-foreground transition-all flex items-center gap-2">
+                                                    <button className="text-sans text-[10px] font-black uppercase tracking-widest bg-zinc-50 group-hover:bg-foreground group-hover:text-background px-6 py-3 border border-border group-hover:border-foreground transition-all flex items-center gap-2">
                                                         View & Apply
                                                         <ChevronRight size={12} strokeWidth={3} />
                                                     </button>
@@ -312,7 +322,7 @@ const CareersPage = () => {
                                                         </div>
                                                         <button
                                                             type="submit"
-                                                            className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-accent transition-all duration-500 inline-flex items-center gap-2 w-full justify-center"
+                                                            className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-zinc-800 transition-all duration-500 inline-flex items-center gap-2 w-full justify-center"
                                                         >
                                                             <Mail size={18} />
                                                             Submit Application

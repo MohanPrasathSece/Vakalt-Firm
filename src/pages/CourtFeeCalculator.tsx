@@ -92,31 +92,28 @@ const calculateCourtFee = (amount: number): number => {
     return fee;
 };
 
+import { useQuery } from '@tanstack/react-query';
+
+// ... (keep the calculation logic unchanged)
+
 const CourtFeeCalculator = () => {
     const [caseType, setCaseType] = useState<string>("");
     const [claimAmount, setClaimAmount] = useState<string>("");
     const [calculatedFee, setCalculatedFee] = useState<number | null>(null);
-    const [feeStructures, setFeeStructures] = useState<FeeStructure[]>([]);
-    const [loadingFees, setLoadingFees] = useState(true);
 
-    useEffect(() => {
-        fetchFeeStructures();
-    }, []);
-
-    const fetchFeeStructures = async () => {
-        setLoadingFees(true);
-        const { data, error } = await supabase
-            .from('court_fee_structure')
-            .select('*')
-            .eq('is_active', true)
-            .order('court_type', { ascending: true })
-            .order('case_type', { ascending: true });
-
-        if (!error && data) {
-            setFeeStructures(data);
-        }
-        setLoadingFees(false);
-    };
+    const { data: feeStructures = [], isLoading: loadingFees } = useQuery({
+        queryKey: ['court_fee_structure'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('court_fee_structure')
+                .select('*')
+                .eq('is_active', true)
+                .order('court_type', { ascending: true })
+                .order('case_type', { ascending: true });
+            if (error) throw error;
+            return data;
+        },
+    });
 
     const handleCalculate = () => {
         const amount = parseFloat(claimAmount);
@@ -178,7 +175,7 @@ const CourtFeeCalculator = () => {
                         <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
                             <Calculator size={16} /> Legal Tools
                         </p>
-                        <h1 className="text-serif text-display font-bold text-white mb-8">
+                        <h1 className="text-serif text-display-sm font-bold text-white mb-8 select-none">
                             Court Fee Calculator
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">

@@ -14,65 +14,49 @@ interface PoliceStation {
     court_address: string;
 }
 
+import { useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@/hooks/useDebounce';
+
 const PoliceStationsPage = () => {
     const [region, setRegion] = useState("Delhi");
     const [searchQuery, setSearchQuery] = useState("");
-    const [stations, setStations] = useState<PoliceStation[]>([]);
     const [selectedStation, setSelectedStation] = useState<PoliceStation | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [totalRecords, setTotalRecords] = useState<number | null>(null);
+    const debouncedSearch = useDebounce(searchQuery, 300);
 
-    // Initial check for data
-    useEffect(() => {
-        const checkData = async () => {
+    // Fetch Total Count
+    const { data: totalRecords } = useQuery({
+        queryKey: ['police_stations_count'],
+        queryFn: async () => {
             const { count, error } = await supabase
                 .from('police_stations')
                 .select('*', { count: 'exact', head: true });
-            if (!error) setTotalRecords(count);
-        };
-        checkData();
-    }, []);
+            if (error) throw error;
+            return count;
+        },
+        staleTime: Infinity, // The count rarely changes
+    });
 
-    // Simplified Gov-style search
-    const performSearch = async (query: string) => {
-        setSearchQuery(query);
-        setSelectedStation(null);
-        setError(null);
+    // Search Query
+    const { data: stations = [], isLoading: loading, error: queryError } = useQuery({
+        queryKey: ['police_stations_search', debouncedSearch],
+        queryFn: async () => {
+            // We search by station name.
+            if (debouncedSearch.length < 2) return [];
 
-        if (query.length < 2) {
-            setStations([]);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            // We search by station name. If region column is missing in DB, this might 400.
-            // We'll wrap it in a try-catch to handle DB schema mismatches gracefully.
-            const { data, error: sbError } = await supabase
+            const { data, error } = await supabase
                 .from('police_stations')
                 .select('*')
-                .ilike('station_name', `%${query.trim()}%`)
+                .ilike('station_name', `%${debouncedSearch.trim()}%`)
                 .limit(50);
 
-            if (sbError) {
-                console.error("Supabase Error:", sbError);
-                // If it's a 400, it's likely a missing column or table
-                if (sbError.code === '42703' || sbError.message.includes('column')) {
-                    setError("Database schema mismatch. Please ensure you have run the updated SQL in Supabase SQL Editor.");
-                } else {
-                    setError("Error connecting to database. Please try again.");
-                }
-                setStations([]);
-            } else {
-                setStations(data || []);
-            }
-        } catch (err) {
-            setError("Unexpected error occurred.");
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (error) throw error;
+            return data;
+        },
+        enabled: debouncedSearch.length >= 2,
+        staleTime: 1000 * 60 * 5, // Cache results for 5 mins
+    });
+
+    const error = queryError ? "Error connecting to database. Please try again." : null;
 
     return (
         <main className="min-h-screen bg-slate-50 font-sans selection:bg-slate-900 selection:text-white">
@@ -111,7 +95,7 @@ const PoliceStationsPage = () => {
                                     >
                                         <option value="Delhi">Delhi</option>
                                     </select>
-                                    {totalRecords !== null && (
+                                    {totalRecords !== undefined && totalRecords !== null && (
                                         <p className="text-[9px] text-slate-400 mt-2 uppercase font-black tracking-widest font-sans">
                                             {totalRecords} Stations Indexed
                                         </p>
@@ -126,7 +110,10 @@ const PoliceStationsPage = () => {
                                             placeholder="Enter station name..."
                                             className="w-full h-11 bg-white border border-slate-300 rounded pl-10 pr-4 text-sm font-bold text-slate-800 focus:border-slate-800 outline-none transition-all font-sans"
                                             value={searchQuery}
-                                            onChange={(e) => performSearch(e.target.value)}
+                                            onChange={(e) => {
+                                                setSearchQuery(e.target.value);
+                                                setSelectedStation(null); // Reset selection on new type
+                                            }}
                                         />
                                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                     </div>

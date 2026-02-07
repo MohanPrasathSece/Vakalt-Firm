@@ -24,29 +24,25 @@ interface LegalDraft {
     downloads_count: number;
 }
 
+import { useQuery } from '@tanstack/react-query';
+
 const LegalDrafts = () => {
-    const [drafts, setDrafts] = useState<LegalDraft[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterCategory, setFilterCategory] = useState<string>("all");
 
-    useEffect(() => {
-        fetchDrafts();
-    }, []);
+    const { data: drafts = [], isLoading: loading } = useQuery({
+        queryKey: ['legal_drafts'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('legal_drafts')
+                .select('*')
+                .eq('is_active', true)
+                .order('title', { ascending: true });
 
-    const fetchDrafts = async () => {
-        setLoading(true);
-        const { data, error } = await supabase
-            .from('legal_drafts')
-            .select('*')
-            .eq('is_active', true)
-            .order('title', { ascending: true });
-
-        if (!error && data) {
-            setDrafts(data);
-        }
-        setLoading(false);
-    };
+            if (error) throw error;
+            return data;
+        },
+    });
 
     const handleDownload = async (draft: LegalDraft) => {
         // Increment download count
@@ -98,8 +94,8 @@ const LegalDrafts = () => {
                         <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
                             <Scale size={16} /> Legal Resources
                         </p>
-                        <h1 className="text-serif text-display font-bold text-white mb-8">
-                            Ready Legal Drafts
+                        <h1 className="text-serif text-display-sm font-bold text-white mb-8 select-none">
+                            Legal Drafts Library
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">
                             Download professionally drafted legal templates and documents. Save time with our

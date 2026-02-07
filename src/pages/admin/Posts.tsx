@@ -34,69 +34,77 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from '@/components/ui/label';
 
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 const Posts = () => {
-    const [posts, setPosts] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [showCategoryDialog, setShowCategoryDialog] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState("");
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchPosts();
-        fetchCategories();
-    }, []);
+    const { data: categories = [] } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const { data, error } = await supabase.from('categories').select('*').order('name');
+            if (error) throw error;
+            return data;
+        },
+    });
 
-    const fetchCategories = async () => {
-        const { data } = await supabase.from('categories').select('*').order('name');
-        if (data) setCategories(data);
-    };
+    const { data: posts = [], isLoading: loading } = useQuery({
+        queryKey: ['admin_posts'],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('posts')
+                .select('id, title, slug, category, featured, status, created_at')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            return data;
+        },
+    });
 
-    const fetchPosts = async () => {
-        setLoading(true);
-        const { data, error } = await supabase
-            .from('posts')
-            .select('id, title, slug, category, featured, status, created_at')
-            .order('created_at', { ascending: false });
-
-        if (error) {
-            toast.error("Failed to load publications");
-        } else {
-            setPosts(data || []);
-        }
-        setLoading(false);
-    };
-
-    const handleDelete = async (id: string) => {
-        const { error } = await supabase.from('posts').delete().eq('id', id);
-        if (error) {
-            toast.error("Error deleting post");
-        } else {
+    const deletePostMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const { error } = await supabase.from('posts').delete().eq('id', id);
+            if (error) throw error;
+        },
+        onSuccess: () => {
             toast.success("Publication archived");
-            fetchPosts();
-        }
+            queryClient.invalidateQueries({ queryKey: ['admin_posts'] });
+        },
+        onError: () => toast.error("Error deleting post"),
+    });
+
+    const addCategoryMutation = useMutation({
+        mutationFn: async (name: string) => {
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const { error } = await supabase.from('categories').insert([{ name, slug }]);
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            toast.success("Category created");
+            setNewCategoryName("");
+            setShowCategoryDialog(false);
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+        },
+        onError: () => toast.error("Error adding category"),
+    });
+
+    const handleDelete = (id: string) => {
+        deletePostMutation.mutate(id);
     };
 
-    const handleAddCategory = async () => {
+    const handleAddCategory = () => {
         if (!newCategoryName.trim()) {
             toast.error("Category name is required");
             return;
         }
-        const slug = newCategoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const { error } = await supabase.from('categories').insert([{ name: newCategoryName, slug }]);
-        if (error) {
-            toast.error("Error adding category");
-        } else {
-            toast.success("Category created");
-            setNewCategoryName("");
-            setShowCategoryDialog(false);
-            fetchCategories();
-        }
+        addCategoryMutation.mutate(newCategoryName);
     };
 
-    const filtered = posts.filter(post => {
+    const filtered = posts.filter((post: any) => {
         const matchesSearch = post.title?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = selectedCategory === "all" ||
             selectedCategory === "uncategorized" && (!post.category || post.category === "Uncategorized") ||

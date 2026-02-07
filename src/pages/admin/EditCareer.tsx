@@ -23,6 +23,7 @@ const EditCareer = () => {
     const [formData, setFormData] = useState({
         title: '',
         type: 'job',
+        company_name: '',
         location: '',
         employment_type: 'full-time',
         experience_level: 'mid',
@@ -31,7 +32,10 @@ const EditCareer = () => {
         responsibilities: '',
         salary_range: '',
         application_deadline: '',
-        status: 'active'
+        status: 'active',
+        contact_name: '',
+        contact_email: '',
+        contact_phone: ''
     });
 
     useEffect(() => {
@@ -154,6 +158,16 @@ const EditCareer = () => {
                                 />
                             </div>
 
+                            <div className="md:col-span-2">
+                                <Label className="text-sm font-bold mb-2 block">Company / Firm Name</Label>
+                                <Input
+                                    value={formData.company_name}
+                                    onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
+                                    placeholder="e.g., Vakalt Legal"
+                                    className="h-12 rounded-xl"
+                                />
+                            </div>
+
                             <div>
                                 <Label className="text-sm font-bold mb-2 block">Type *</Label>
                                 <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
@@ -235,7 +249,9 @@ const EditCareer = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="pending">Pending</SelectItem>
                                         <SelectItem value="closed">Closed</SelectItem>
+                                        <SelectItem value="rejected">Rejected</SelectItem>
                                         <SelectItem value="draft">Draft</SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -278,6 +294,37 @@ const EditCareer = () => {
                                     className="min-h-[150px] rounded-xl font-mono text-sm"
                                 />
                                 <p className="text-xs text-gray-400 mt-2">Tip: Use bullet points (•) for better formatting</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Contact Information */}
+                    <div className="bg-white border border-gray-200 p-8 rounded-3xl shadow-sm space-y-6">
+                        <h3 className="font-bold text-black border-b border-gray-100 pb-4">Internal Contact Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <Label className="text-sm font-bold mb-2 block">Contact Name</Label>
+                                <Input
+                                    value={formData.contact_name}
+                                    onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
+                                    className="h-12 rounded-xl"
+                                />
+                            </div>
+                            <div>
+                                <Label className="text-sm font-bold mb-2 block">Contact Email</Label>
+                                <Input
+                                    value={formData.contact_email}
+                                    onChange={(e) => setFormData({ ...formData, contact_email: e.target.value })}
+                                    className="h-12 rounded-xl"
+                                />
+                            </div>
+                            <div>
+                                <Label className="text-sm font-bold mb-2 block">Contact Phone</Label>
+                                <Input
+                                    value={formData.contact_phone}
+                                    onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
+                                    className="h-12 rounded-xl"
+                                />
                             </div>
                         </div>
                     </div>

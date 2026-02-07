@@ -15,34 +15,39 @@ import {
     ArrowRight
 } from 'lucide-react';
 
+import { useQuery } from '@tanstack/react-query';
+
 const Dashboard = () => {
-    const [stats, setStats] = useState({
+    const navigate = useNavigate();
+
+    const { data: stats = {
         totalPosts: 0,
         featuredPosts: 0,
         categories: 0,
-        latestPosts: [] as any[]
-    });
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+        latestPosts: []
+    }, isLoading: loading } = useQuery({
+        queryKey: ['admin_dashboard_stats'],
+        queryFn: async () => {
+            const { data: posts, error } = await supabase
+                .from('posts')
+                .select('id, title, featured, category, created_at')
+                .order('created_at', { ascending: false });
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            setLoading(true);
-            const { data: posts } = await supabase.from('posts').select('id, title, featured, category, created_at').order('created_at', { ascending: false });
+            if (error) throw error;
+
             if (posts) {
                 const uniqueCategories = new Set(posts.map(p => p.category || 'Uncategorized')).size;
                 const featuredCount = posts.filter(p => p.featured).length;
-                setStats({
+                return {
                     totalPosts: posts.length,
                     featuredPosts: featuredCount,
                     categories: uniqueCategories,
                     latestPosts: posts.slice(0, 5)
-                });
+                };
             }
-            setLoading(false);
-        };
-        fetchStats();
-    }, []);
+            return { totalPosts: 0, featuredPosts: 0, categories: 0, latestPosts: [] };
+        }
+    });
 
     const cards = [
         { label: 'Total Publications', value: stats.totalPosts, icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },

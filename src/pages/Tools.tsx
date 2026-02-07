@@ -10,28 +10,28 @@ const tools = [
         description: "Calculate court fees for civil suits based on the Himachal Pradesh Court Fees Act. Get instant fee calculations with comprehensive fee structure tables.",
         icon: Calculator,
         link: "/tools/court-fee-calculator",
-        color: "bg-blue-50 text-blue-600"
+        color: "bg-zinc-50 text-foreground border border-border"
     },
     {
         title: "Legal Drafts Library",
         description: "Download ready-made legal templates and documents. Access professionally drafted bail applications, agreements, petitions, notices, and more.",
         icon: FileText,
         link: "/tools/legal-drafts",
-        color: "bg-green-50 text-green-600"
+        color: "bg-zinc-100 text-foreground border border-border"
     },
     {
         title: "Court VC Links",
         description: "Find video conferencing links for courts across India. Search by judge name to quickly access virtual court hearings.",
         icon: Video,
         link: "/tools/court-vc-links",
-        color: "bg-purple-50 text-purple-600"
+        color: "bg-zinc-50 text-foreground border border-border"
     },
     {
         title: "Police Stations Directory",
         description: "Comprehensive directory of police stations with their jurisdictional courts. Essential information for legal proceedings and case filing.",
         icon: Building,
         link: "/tools/police-stations",
-        color: "bg-orange-50 text-orange-600"
+        color: "bg-zinc-100 text-foreground border border-border"
     }
 ];
 
@@ -47,7 +47,7 @@ const Tools = () => {
                         <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
                             <Scale size={16} /> Resources
                         </p>
-                        <h1 className="text-serif text-display font-bold text-white mb-8">
+                        <h1 className="text-serif text-display-sm font-bold text-white mb-8 select-none">
                             Legal Tools
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">

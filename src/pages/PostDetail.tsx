@@ -20,82 +20,76 @@ interface Article {
     slug: string;
 }
 
+import { useQuery } from '@tanstack/react-query';
+
 const PostDetail = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
-    const [post, setPost] = useState<Article | null>(null);
-    const [recommended, setRecommended] = useState<Article[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchPostAndRecommended = async () => {
-            setLoading(true);
-            try {
-                const { data, error } = await supabase
-                    .from('posts')
-                    .select('*')
-                    .eq('slug', slug)
-                    .single();
+    const { data: postData, isLoading: loading } = useQuery({
+        queryKey: ['post', slug],
+        queryFn: async () => {
+            if (!slug) throw new Error("No slug");
 
-                if (error || !data) {
-                    toast.error("Article not found");
-                    navigate('/insights');
-                    return;
-                }
+            // 1. Fetch Main Post
+            const { data: post, error } = await supabase
+                .from('posts')
+                .select('*')
+                .eq('slug', slug)
+                .single();
 
-                setPost(data);
+            if (error || !post) {
+                toast.error("Article not found");
+                navigate('/insights');
+                return null;
+            }
 
-                // Fetch related posts (same category, excluding current)
-                const { data: relatedData } = await supabase
+            // 2. Fetch Recommended
+            let recommendedData = [];
+            const { data: relatedData } = await supabase
+                .from('posts')
+                .select('id, title, slug, image_url, category, created_at, read_time, excerpt')
+                .neq('id', post.id)
+                .eq('category', post.category)
+                .eq('status', 'published')
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            if (relatedData && relatedData.length < 3) {
+                const { data: latestData } = await supabase
                     .from('posts')
                     .select('id, title, slug, image_url, category, created_at, read_time, excerpt')
-                    .neq('id', data.id)
-                    .eq('category', data.category)
+                    .neq('id', post.id)
+                    .not('id', 'in', `(${relatedData.map(r => r.id).join(',') || '00000000-0000-0000-0000-000000000000'})`)
                     .eq('status', 'published')
                     .order('created_at', { ascending: false })
-                    .limit(3);
+                    .limit(3 - (relatedData.length));
 
-                // If less than 3 related found, fetch latest as well
-                if (relatedData && relatedData.length < 3) {
-                    const { data: latestData } = await supabase
-                        .from('posts')
-                        .select('id, title, slug, image_url, category, created_at, read_time, excerpt')
-                        .neq('id', data.id)
-                        .not('id', 'in', `(${relatedData.map(r => r.id).join(',') || '00000000-0000-0000-0000-000000000000'})`)
-                        .eq('status', 'published')
-                        .order('created_at', { ascending: false })
-                        .limit(3 - (relatedData.length));
-
-                    if (latestData) {
-                        setRecommended([...relatedData, ...latestData] as Article[]);
-                    } else {
-                        setRecommended(relatedData as Article[]);
-                    }
-                } else if (relatedData) {
-                    setRecommended(relatedData as Article[]);
-                }
-
-                // Fetch all unique categories
-                const { data: catData } = await supabase
-                    .from('posts')
-                    .select('category')
-                    .eq('status', 'published');
-
-                if (catData) {
-                    const uniqueCats = Array.from(new Set(catData.map(c => c.category || 'Uncategorized')));
-                    setCategories(uniqueCats);
-                }
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
+                recommendedData = [...(relatedData || []), ...(latestData || [])];
+            } else {
+                recommendedData = relatedData || [];
             }
-        };
 
-        if (slug) fetchPostAndRecommended();
+            // 3. Fetch Categories
+            const { data: catData } = await supabase
+                .from('posts')
+                .select('category')
+                .eq('status', 'published');
+            const uniqueCats = catData ? Array.from(new Set(catData.map(c => c.category || 'Uncategorized'))) : [];
+
+            return { post, recommended: recommendedData, categories: uniqueCats };
+        },
+        enabled: !!slug,
+        staleTime: 1000 * 60 * 10, // Cache for 10 mins
+    });
+
+    useEffect(() => {
         window.scrollTo(0, 0);
-    }, [slug, navigate]);
+    }, [slug]);
+
+    const post = postData?.post;
+    const recommended = postData?.recommended || [];
+    const categories = postData?.categories || [];
 
     if (loading) {
         return <div className="min-h-screen bg-background flex items-center justify-center">

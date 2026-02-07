@@ -19,34 +19,29 @@ interface Article {
   image_url?: string;
 }
 
+import { useQuery } from '@tanstack/react-query';
+
 const Insights = () => {
   const [searchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || "All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [dynamicCategories, setDynamicCategories] = useState<string[]>(["All"]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      setLoading(true);
+  const { data: articles = [], isLoading: loading } = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
       // PERFORMANCE OPTIMIZATION: Only fetch list metadata, skip large content field
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('posts')
         .select('id, title, slug, category, featured, created_at, read_time, image_url, excerpt')
         .eq('status', 'published')
         .order('created_at', { ascending: false });
 
-      if (data) {
-        setArticles(data);
-        const cats = Array.from(new Set(data.map(p => p.category || 'Uncategorized')));
-        setDynamicCategories(["All", ...cats]);
-      }
-      setLoading(false);
-    };
+      if (error) throw error;
+      return data;
+    },
+  });
 
-    fetchArticles();
-  }, []);
+  const dynamicCategories = ["All", ...Array.from(new Set(articles.map((p: any) => p.category || 'Uncategorized')))];
 
   // Sync active category if URL param changes
   useEffect(() => {

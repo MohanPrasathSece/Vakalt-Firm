@@ -29,6 +29,7 @@ const Careers = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterType, setFilterType] = useState<string>("all");
+    const [statusFilter, setStatusFilter] = useState<string>("all");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -80,12 +81,14 @@ const Careers = () => {
     const filtered = careers.filter(career => {
         const matchesSearch = career.title?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesType = filterType === "all" || career.type === filterType;
-        return matchesSearch && matchesType;
+        const matchesStatus = statusFilter === "all" || career.status === statusFilter;
+        return matchesSearch && matchesType && matchesStatus;
     });
 
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'active': return 'text-green-600 bg-green-50';
+            case 'pending': return 'text-orange-600 bg-orange-50';
             case 'closed': return 'text-gray-600 bg-gray-50';
             case 'draft': return 'text-yellow-600 bg-yellow-50';
             default: return 'text-gray-600 bg-gray-50';
@@ -109,6 +112,23 @@ const Careers = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <div className="flex gap-2 p-1 bg-gray-100 rounded-xl overflow-x-auto max-w-full">
+                        {['all', 'active', 'pending', 'closed'].map((status) => (
+                            <button
+                                key={status}
+                                onClick={() => setStatusFilter(status)}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-all whitespace-nowrap ${statusFilter === status
+                                        ? 'bg-white text-black shadow-sm'
+                                        : 'text-gray-500 hover:text-black'
+                                    }`}
+                            >
+                                {status} <span className="ml-1 opacity-50 text-xs">
+                                    ({careers.filter(c => status === 'all' || c.status === status).length})
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+
                     <div className="relative flex-1 group w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-black transition-colors" />
                         <Input
@@ -118,36 +138,6 @@ const Careers = () => {
                             className="bg-white border-gray-200 pl-11 h-12 rounded-xl focus:ring-1 focus:ring-black focus:border-black transition-all"
                         />
                     </div>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="h-12 rounded-xl border-gray-200 font-medium px-6 gap-2 hover:bg-white hover:border-black transition-all">
-                                <Briefcase size={18} />
-                                {filterType === "all" ? "All Types" :
-                                    filterType === "job" ? "Jobs Only" : "Internships Only"}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 rounded-xl border-gray-100 shadow-xl p-2">
-                            <DropdownMenuItem
-                                className="rounded-lg font-semibold py-2 cursor-pointer"
-                                onClick={() => setFilterType("all")}
-                            >
-                                All Types
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="rounded-lg font-semibold py-2 cursor-pointer"
-                                onClick={() => setFilterType("job")}
-                            >
-                                Jobs Only
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                className="rounded-lg font-semibold py-2 cursor-pointer"
-                                onClick={() => setFilterType("internship")}
-                            >
-                                Internships Only
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm shadow-gray-100">
@@ -185,7 +175,8 @@ const Careers = () => {
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-black">{career.title}</p>
-                                                    <p className="text-xs text-gray-400 mt-0.5">{career.employment_type}</p>
+                                                    <p className="text-xs text-gray-400 mt-0.5">{career.company_name || 'Vakalt'}</p>
+                                                    <p className="text-xs text-gray-400">{career.employment_type}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -216,6 +207,15 @@ const Careers = () => {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                {career.status === 'pending' && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="mr-2 h-9 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold"
+                                                        onClick={() => handleStatusToggle(career.id, 'active')} // force to active
+                                                    >
+                                                        Approve
+                                                    </Button>
+                                                )}
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
