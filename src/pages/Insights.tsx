@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { ArrowUpRight, Search, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -20,7 +20,8 @@ interface Article {
 }
 
 const Insights = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchParams] = useSearchParams();
+  const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || "All");
   const [searchQuery, setSearchQuery] = useState("");
   const [articles, setArticles] = useState<Article[]>([]);
   const [dynamicCategories, setDynamicCategories] = useState<string[]>(["All"]);
@@ -46,6 +47,14 @@ const Insights = () => {
 
     fetchArticles();
   }, []);
+
+  // Sync active category if URL param changes
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat) {
+      setActiveCategory(cat);
+    }
+  }, [searchParams]);
 
   const filtered = articles.filter((a) => {
     const matchesCat = activeCategory === "All" || (a.category || "Uncategorized") === activeCategory;

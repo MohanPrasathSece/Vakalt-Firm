@@ -25,6 +25,7 @@ const PostDetail = () => {
     const navigate = useNavigate();
     const [post, setPost] = useState<Article | null>(null);
     const [recommended, setRecommended] = useState<Article[]>([]);
+    const [categories, setCategories] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -45,16 +46,46 @@ const PostDetail = () => {
 
                 setPost(data);
 
-                // Fetch recommended (same category or latest, excluding current)
-                const { data: recData } = await supabase
+                // Fetch related posts (same category, excluding current)
+                const { data: relatedData } = await supabase
                     .from('posts')
                     .select('id, title, slug, image_url, category, created_at, read_time, excerpt')
                     .neq('id', data.id)
+                    .eq('category', data.category)
                     .eq('status', 'published')
                     .order('created_at', { ascending: false })
                     .limit(3);
 
-                if (recData) setRecommended(recData as Article[]);
+                // If less than 3 related found, fetch latest as well
+                if (relatedData && relatedData.length < 3) {
+                    const { data: latestData } = await supabase
+                        .from('posts')
+                        .select('id, title, slug, image_url, category, created_at, read_time, excerpt')
+                        .neq('id', data.id)
+                        .not('id', 'in', `(${relatedData.map(r => r.id).join(',') || '00000000-0000-0000-0000-000000000000'})`)
+                        .eq('status', 'published')
+                        .order('created_at', { ascending: false })
+                        .limit(3 - (relatedData.length));
+
+                    if (latestData) {
+                        setRecommended([...relatedData, ...latestData] as Article[]);
+                    } else {
+                        setRecommended(relatedData as Article[]);
+                    }
+                } else if (relatedData) {
+                    setRecommended(relatedData as Article[]);
+                }
+
+                // Fetch all unique categories
+                const { data: catData } = await supabase
+                    .from('posts')
+                    .select('category')
+                    .eq('status', 'published');
+
+                if (catData) {
+                    const uniqueCats = Array.from(new Set(catData.map(c => c.category || 'Uncategorized')));
+                    setCategories(uniqueCats);
+                }
             } catch (err) {
                 console.error(err);
             } finally {
@@ -136,8 +167,8 @@ const PostDetail = () => {
                         <ScrollReveal>
                             <div className="flex items-center justify-between mb-16 border-b border-black/5 pb-8">
                                 <div>
-                                    <h2 className="text-serif text-display-sm font-bold text-foreground mb-2">More Insights</h2>
-                                    <p className="text-sans text-muted-foreground font-medium">Continue reading our latest legal intelligence.</p>
+                                    <h2 className="text-serif text-display-sm font-bold text-foreground mb-2">Related Briefings</h2>
+                                    <p className="text-sans text-muted-foreground font-medium">Authoritative insights from {post.category || 'our archive'}.</p>
                                 </div>
                                 <Link to="/insights" className="text-sans text-label uppercase font-bold hover:underline">Explore all</Link>
                             </div>
@@ -174,30 +205,28 @@ const PostDetail = () => {
                 </section>
             )}
 
-            {/* CTA Section */}
-            <section className="bg-surface-dark py-32 relative overflow-hidden">
-                <div className="container mx-auto px-6 lg:px-12 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
+            {/* Categories Exploration */}
+            {categories.length > 0 && (
+                <section className="bg-white py-24 border-t border-border">
+                    <div className="container mx-auto px-6 lg:px-12 text-center">
                         <ScrollReveal>
-                            <h2 className="text-serif text-display-sm lg:text-display font-bold text-surface-dark-foreground mb-8">Ready to secure your litigation strategy?</h2>
-                            <p className="text-sans text-xl text-surface-charcoal-foreground/60 mb-12 leading-relaxed">
-                                Join dozens of law firms leveraging Vakalt's intelligence. Subscribe to our briefing.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                                <input
-                                    type="email"
-                                    placeholder="Your corporate email"
-                                    className="flex-1 bg-surface-charcoal border border-white/10 rounded-2xl px-8 py-5 text-white focus:outline-none focus:border-white/30 transition-all shadow-inner"
-                                />
-                                <button className="bg-white text-black font-black px-10 py-5 rounded-2xl hover:bg-white/90 transition-all uppercase text-[10px] tracking-[0.2em]">
-                                    Join Briefing
-                                </button>
+                            <h2 className="text-sans text-label uppercase text-muted-foreground mb-8 tracking-[0.3em]">Explore Topics</h2>
+                            <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                                {categories.map((cat) => (
+                                    <Link
+                                        key={cat}
+                                        to={`/insights?category=${encodeURIComponent(cat)}`}
+                                        className="text-sans text-[10px] font-black uppercase tracking-widest px-8 py-4 border border-border rounded-full hover:bg-black hover:text-white hover:border-black transition-all duration-300"
+                                    >
+                                        {cat}
+                                    </Link>
+                                ))}
                             </div>
                         </ScrollReveal>
                     </div>
-                </div>
-                <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/5 rounded-full blur-[100px] pointer-events-none"></div>
-            </section>
+                </section>
+            )}
+
 
             <Footer />
 

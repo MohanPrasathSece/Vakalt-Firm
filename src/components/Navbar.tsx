@@ -13,14 +13,14 @@ const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const searchBtnRef = useRef<HTMLButtonElement>(null);
-  const isLightHero = false; // All pages currently use dark heroes or standard scrolling
+  const isLightHero = isLight;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -54,7 +54,7 @@ const Navbar = () => {
           <Link
             to="/"
             onClick={() => handleLinkClick('/')}
-            className={`text-serif text-2xl lg:text-3xl font-bold tracking-[0.08em] transition-colors duration-300 ${textColorClass}`}
+            className={`${isLightHero ? 'font-sans' : 'text-serif'} text-2xl lg:text-3xl font-bold tracking-[0.08em] transition-colors duration-300 ${textColorClass}`}
           >
             VAKALT
           </Link>

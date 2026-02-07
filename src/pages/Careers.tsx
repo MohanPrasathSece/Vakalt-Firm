@@ -54,50 +54,55 @@ const CareersPage = () => {
             <Navbar />
 
             {/* Hero Section */}
-            <section className="bg-surface-dark pt-36 pb-20 lg:pt-48 lg:pb-28">
+            <section className="bg-slate-900 pt-32 pb-12 lg:pt-40 lg:pb-16 section-dark">
                 <div className="container mx-auto px-6 lg:px-12">
                     <ScrollReveal>
-                        <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
-                            <Briefcase size={16} /> Join Our Team
-                        </p>
-                        <h1 className="text-serif text-display font-bold text-surface-dark-foreground mb-8">
-                            Careers
-                        </h1>
-                        <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">
-                            Build your legal career with us. Explore opportunities to work on challenging cases
-                            and grow alongside experienced professionals.
-                        </p>
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                            <div>
+                                <h1 className="text-serif text-display-sm font-bold text-white mb-4">
+                                    Career Opportunities
+                                </h1>
+                                <p className="text-sans text-sm text-slate-400 max-w-xl font-medium">
+                                    Join our team of legal professionals. We are seeking talented individuals to help us redefine legal research and litigation support.
+                                </p>
+                            </div>
+                            <div className="hidden md:block">
+                                <p className="text-[10px] font-bold text-white uppercase tracking-widest bg-white/10 px-3 py-1 border border-white/20 rounded">
+                                    {careers.length} Positions Available
+                                </p>
+                            </div>
+                        </div>
                     </ScrollReveal>
                 </div>
             </section>
 
             {/* Filter Section */}
-            <section className="bg-background py-8 border-b border-border">
+            <section className="bg-slate-50 py-6 sticky top-20 z-10 border-b border-border shadow-sm">
                 <div className="container mx-auto px-6 lg:px-12">
-                    <div className="flex gap-4 justify-center">
+                    <div className="flex gap-2 lg:gap-3 flex-wrap">
                         <button
                             onClick={() => setFilterType("all")}
-                            className={`text-sans text-label uppercase tracking-[0.1em] px-8 py-3 transition-all duration-300 ${filterType === "all"
-                                ? "bg-foreground text-background"
-                                : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
+                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded ${filterType === "all"
+                                ? "bg-foreground text-background shadow-md"
+                                : "bg-white text-muted-foreground border border-border hover:border-foreground"
                                 }`}
                         >
                             All Positions
                         </button>
                         <button
                             onClick={() => setFilterType("job")}
-                            className={`text-sans text-label uppercase tracking-[0.1em] px-8 py-3 transition-all duration-300 ${filterType === "job"
-                                ? "bg-foreground text-background"
-                                : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
+                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded ${filterType === "job"
+                                ? "bg-foreground text-background shadow-md"
+                                : "bg-white text-muted-foreground border border-border hover:border-foreground"
                                 }`}
                         >
                             Jobs
                         </button>
                         <button
                             onClick={() => setFilterType("internship")}
-                            className={`text-sans text-label uppercase tracking-[0.1em] px-8 py-3 transition-all duration-300 ${filterType === "internship"
-                                ? "bg-foreground text-background"
-                                : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
+                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded ${filterType === "internship"
+                                ? "bg-foreground text-background shadow-md"
+                                : "bg-white text-muted-foreground border border-border hover:border-foreground"
                                 }`}
                         >
                             Internships
@@ -107,8 +112,8 @@ const CareersPage = () => {
             </section>
 
             {/* Listings Section */}
-            <section className="bg-background py-16 lg:py-28">
-                <div className="container mx-auto px-6 lg:px-12">
+            <section className="bg-white py-12 lg:py-20">
+                <div className="container mx-auto px-6 lg:px-12 max-w-5xl">
                     {loading ? (
                         <div className="flex justify-center py-20">
                             <div className="w-8 h-8 border-2 border-border border-t-foreground rounded-full animate-spin"></div>
@@ -118,210 +123,205 @@ const CareersPage = () => {
                             <p className="text-sans text-body text-muted-foreground">
                                 No {filterType === "all" ? "" : filterType} positions available at the moment.
                             </p>
-                            <p className="text-sans text-sm text-muted-foreground/60 mt-2">
-                                Check back soon for new opportunities.
-                            </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="space-y-4">
                             {filtered.map((career, index) => (
-                                <ScrollReveal key={career.id} delay={index * 0.1}>
-                                    <div className="bg-white border border-border p-10 hover:border-foreground transition-all duration-500 group">
-                                        <div className="flex items-start justify-between mb-6">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`p-3 ${career.type === 'job' ? 'bg-surface-dark' : 'bg-accent/10'}`}>
-                                                    {career.type === 'job' ?
-                                                        <Briefcase size={20} className="text-surface-dark-foreground" /> :
-                                                        <GraduationCap size={20} className="text-accent" />
-                                                    }
-                                                </div>
-                                                <div>
-                                                    <span className="text-sans text-label uppercase text-muted-foreground text-xs">
-                                                        {career.type === 'job' ? 'Job Opening' : 'Internship'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <span className="text-sans text-label uppercase text-xs bg-surface-dark text-surface-dark-foreground px-3 py-1">
-                                                {career.employment_type}
-                                            </span>
-                                        </div>
-
-                                        <h3 className="text-serif text-subheading font-semibold text-foreground mb-4 group-hover:text-accent transition-colors">
-                                            {career.title}
-                                        </h3>
-
-                                        <p className="text-sans text-sm text-muted-foreground leading-relaxed mb-6 line-clamp-2">
-                                            {career.description}
-                                        </p>
-
-                                        <div className="flex flex-wrap gap-4 mb-6 text-sm text-muted-foreground">
-                                            <div className="flex items-center gap-2">
-                                                <MapPin size={16} />
-                                                <span className="text-sans">{career.location}</span>
-                                            </div>
-                                            {career.salary_range && (
-                                                <div className="flex items-center gap-2">
-                                                    <IndianRupee size={16} />
-                                                    <span className="text-sans">{career.salary_range}</span>
-                                                </div>
-                                            )}
-                                            {career.application_deadline && (
-                                                <div className="flex items-center gap-2">
-                                                    <Calendar size={16} />
-                                                    <span className="text-sans">Apply by {formatDate(career.application_deadline)}</span>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <button
-                                                    onClick={() => setSelectedCareer(career)}
-                                                    className="text-sans text-label uppercase text-foreground border-b border-foreground/30 pb-1 hover:border-foreground transition-colors inline-flex items-center gap-2 group"
-                                                >
-                                                    View Details
-                                                    <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                                </button>
-                                            </DialogTrigger>
-                                            <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                                                <DialogHeader>
-                                                    <DialogTitle className="text-serif text-subheading font-bold">
-                                                        {career.title}
-                                                    </DialogTitle>
-                                                </DialogHeader>
-
-                                                <div className="space-y-6 pt-4">
-                                                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground pb-6 border-b border-border">
-                                                        <div className="flex items-center gap-2">
-                                                            <MapPin size={16} />
-                                                            <span>{career.location}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <Clock size={16} />
-                                                            <span>{career.employment_type}</span>
-                                                        </div>
-                                                        {career.salary_range && (
-                                                            <div className="flex items-center gap-2">
-                                                                <IndianRupee size={16} />
-                                                                <span>{career.salary_range}</span>
-                                                            </div>
-                                                        )}
+                                <ScrollReveal key={career.id} delay={index * 0.05}>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <div
+                                                onClick={() => setSelectedCareer(career)}
+                                                className="bg-white border border-border p-5 lg:p-6 hover:border-foreground hover:shadow-md transition-all duration-300 group cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-6"
+                                            >
+                                                <div className="flex items-start gap-4 flex-1">
+                                                    <div className={`p-2.5 rounded shrink-0 ${career.type === 'job' ? 'bg-slate-100' : 'bg-slate-50'}`}>
+                                                        {career.type === 'job' ?
+                                                            <Briefcase size={18} className="text-foreground" /> :
+                                                            <GraduationCap size={18} className="text-foreground" />
+                                                        }
                                                     </div>
-
                                                     <div>
-                                                        <h4 className="text-sans text-body font-semibold mb-3">About the Role</h4>
-                                                        <p className="text-sans text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                                                            {career.description}
+                                                        <div className="flex items-center gap-3 mb-1">
+                                                            <h3 className="text-sans text-lg font-bold text-foreground group-hover:text-accent transition-colors">
+                                                                {career.title}
+                                                            </h3>
+                                                            <span className="text-[9px] font-black uppercase tracking-tighter bg-foreground text-background px-1.5 py-0.5 rounded">
+                                                                {career.employment_type}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <MapPin size={12} strokeWidth={3} />
+                                                                <span className="font-bold">{career.location}</span>
+                                                            </div>
+                                                            {career.salary_range && (
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <IndianRupee size={12} strokeWidth={3} />
+                                                                    <span className="font-bold">{career.salary_range}</span>
+                                                                </div>
+                                                            )}
+                                                            {career.type === 'internship' && (
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <GraduationCap size={12} strokeWidth={3} />
+                                                                    <span className="font-bold uppercase">Internship</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-border">
+                                                    <div className="text-right hidden sm:block">
+                                                        <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Post Date</p>
+                                                        <p className="text-[11px] font-bold text-foreground">{formatDate(career.created_at)}</p>
+                                                    </div>
+                                                    <div className="h-8 w-px bg-border hidden md:block"></div>
+                                                    <button className="text-sans text-[10px] font-black uppercase tracking-widest bg-slate-50 group-hover:bg-foreground group-hover:text-background px-6 py-3 border border-border group-hover:border-foreground transition-all flex items-center gap-2">
+                                                        View & Apply
+                                                        <ChevronRight size={12} strokeWidth={3} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                                            <DialogHeader>
+                                                <DialogTitle className="text-serif text-subheading font-bold">
+                                                    {career.title}
+                                                </DialogTitle>
+                                            </DialogHeader>
+
+                                            <div className="space-y-6 pt-4">
+                                                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground pb-6 border-b border-border">
+                                                    <div className="flex items-center gap-2">
+                                                        <MapPin size={16} />
+                                                        <span>{career.location}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock size={16} />
+                                                        <span>{career.employment_type}</span>
+                                                    </div>
+                                                    {career.salary_range && (
+                                                        <div className="flex items-center gap-2">
+                                                            <IndianRupee size={16} />
+                                                            <span>{career.salary_range}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="text-sans text-body font-semibold mb-3">About the Role</h4>
+                                                    <p className="text-sans text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                                        {career.description}
+                                                    </p>
+                                                </div>
+
+                                                {career.requirements && (
+                                                    <div>
+                                                        <h4 className="text-sans text-body font-semibold mb-3">Requirements</h4>
+                                                        <div className="text-sans text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                                            {career.requirements}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {career.responsibilities && (
+                                                    <div>
+                                                        <h4 className="text-sans text-body font-semibold mb-3">Responsibilities</h4>
+                                                        <div className="text-sans text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                                            {career.responsibilities}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {career.application_deadline && (
+                                                    <div className="bg-surface-dark p-6">
+                                                        <p className="text-sans text-sm text-surface-charcoal-foreground/60">
+                                                            <strong>Application Deadline:</strong> {formatDate(career.application_deadline)}
                                                         </p>
                                                     </div>
+                                                )}
 
-                                                    {career.requirements && (
-                                                        <div>
-                                                            <h4 className="text-sans text-body font-semibold mb-3">Requirements</h4>
-                                                            <div className="text-sans text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                                                                {career.requirements}
-                                                            </div>
-                                                        </div>
-                                                    )}
+                                                <div className="pt-6 border-t border-border">
+                                                    <h4 className="text-sans text-body font-semibold mb-6">Apply for this Position</h4>
+                                                    <form
+                                                        onSubmit={async (e) => {
+                                                            e.preventDefault();
+                                                            const formData = new FormData(e.currentTarget);
+                                                            const applicationData = {
+                                                                career_id: career.id,
+                                                                applicant_name: formData.get('name') as string,
+                                                                applicant_email: formData.get('email') as string,
+                                                                applicant_phone: formData.get('phone') as string,
+                                                                cover_letter: formData.get('message') as string,
+                                                            };
 
-                                                    {career.responsibilities && (
-                                                        <div>
-                                                            <h4 className="text-sans text-body font-semibold mb-3">Responsibilities</h4>
-                                                            <div className="text-sans text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                                                                {career.responsibilities}
-                                                            </div>
-                                                        </div>
-                                                    )}
+                                                            const { error } = await supabase
+                                                                .from('career_applications')
+                                                                .insert([applicationData]);
 
-                                                    {career.application_deadline && (
-                                                        <div className="bg-surface-dark p-6">
-                                                            <p className="text-sans text-sm text-surface-charcoal-foreground/60">
-                                                                <strong>Application Deadline:</strong> {formatDate(career.application_deadline)}
-                                                            </p>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="pt-6 border-t border-border">
-                                                        <h4 className="text-sans text-body font-semibold mb-6">Apply for this Position</h4>
-                                                        <form
-                                                            onSubmit={async (e) => {
-                                                                e.preventDefault();
-                                                                const formData = new FormData(e.currentTarget);
-                                                                const applicationData = {
-                                                                    career_id: career.id,
-                                                                    applicant_name: formData.get('name') as string,
-                                                                    applicant_email: formData.get('email') as string,
-                                                                    applicant_phone: formData.get('phone') as string,
-                                                                    cover_letter: formData.get('message') as string,
-                                                                };
-
-                                                                const { error } = await supabase
-                                                                    .from('career_applications')
-                                                                    .insert([applicationData]);
-
-                                                                if (error) {
-                                                                    alert("Error submitting application: " + error.message);
-                                                                } else {
-                                                                    alert("Application submitted successfully!");
-                                                                    (e.target as HTMLFormElement).reset();
-                                                                }
-                                                            }}
-                                                            className="space-y-4"
-                                                        >
-                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                <div className="space-y-2">
-                                                                    <label className="text-xs uppercase font-semibold text-muted-foreground">Full Name</label>
-                                                                    <input
-                                                                        required
-                                                                        name="name"
-                                                                        placeholder="John Doe"
-                                                                        className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
-                                                                    />
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <label className="text-xs uppercase font-semibold text-muted-foreground">Email Address</label>
-                                                                    <input
-                                                                        required
-                                                                        type="email"
-                                                                        name="email"
-                                                                        placeholder="john@example.com"
-                                                                        className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
-                                                                    />
-                                                                </div>
-                                                            </div>
+                                                            if (error) {
+                                                                alert("Error submitting application: " + error.message);
+                                                            } else {
+                                                                alert("Application submitted successfully!");
+                                                                (e.target as HTMLFormElement).reset();
+                                                            }
+                                                        }}
+                                                        className="space-y-4"
+                                                    >
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             <div className="space-y-2">
-                                                                <label className="text-xs uppercase font-semibold text-muted-foreground">Phone Number</label>
+                                                                <label className="text-xs uppercase font-semibold text-muted-foreground">Full Name</label>
                                                                 <input
                                                                     required
-                                                                    type="tel"
-                                                                    name="phone"
-                                                                    placeholder="+91 98765 43210"
+                                                                    name="name"
+                                                                    placeholder="John Doe"
                                                                     className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
                                                                 />
                                                             </div>
                                                             <div className="space-y-2">
-                                                                <label className="text-xs uppercase font-semibold text-muted-foreground">Cover Letter / Message</label>
-                                                                <textarea
+                                                                <label className="text-xs uppercase font-semibold text-muted-foreground">Email Address</label>
+                                                                <input
                                                                     required
-                                                                    name="message"
-                                                                    rows={4}
-                                                                    placeholder="Tell us why you're a good fit..."
+                                                                    type="email"
+                                                                    name="email"
+                                                                    placeholder="john@example.com"
                                                                     className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
-                                                                ></textarea>
+                                                                />
                                                             </div>
-                                                            <button
-                                                                type="submit"
-                                                                className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-accent transition-all duration-500 inline-flex items-center gap-2 w-full justify-center"
-                                                            >
-                                                                <Mail size={18} />
-                                                                Submit Application
-                                                            </button>
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-xs uppercase font-semibold text-muted-foreground">Phone Number</label>
+                                                            <input
+                                                                required
+                                                                type="tel"
+                                                                name="phone"
+                                                                placeholder="+91 98765 43210"
+                                                                className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-xs uppercase font-semibold text-muted-foreground">Cover Letter / Message</label>
+                                                            <textarea
+                                                                required
+                                                                name="message"
+                                                                rows={4}
+                                                                placeholder="Tell us why you're a good fit..."
+                                                                className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
+                                                            ></textarea>
+                                                        </div>
+                                                        <button
+                                                            type="submit"
+                                                            className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-accent transition-all duration-500 inline-flex items-center gap-2 w-full justify-center"
+                                                        >
+                                                            <Mail size={18} />
+                                                            Submit Application
+                                                        </button>
+                                                    </form>
                                                 </div>
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
                                 </ScrollReveal>
                             ))}
                         </div>
@@ -329,26 +329,6 @@ const CareersPage = () => {
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="bg-surface-dark py-16 lg:py-28">
-                <div className="container mx-auto px-6 lg:px-12 text-center">
-                    <ScrollReveal>
-                        <h2 className="text-serif text-display-sm font-bold text-surface-dark-foreground mb-6">
-                            Don't See a Fit?
-                        </h2>
-                        <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-2xl mx-auto mb-10">
-                            We're always looking for talented individuals. Send us your resume and we'll keep
-                            you in mind for future opportunities.
-                        </p>
-                        <a
-                            href="mailto:contact@vakalt.com?subject=General Application"
-                            className="text-sans text-label uppercase tracking-[0.1em] bg-surface-dark-foreground text-surface-dark px-12 py-5 hover:bg-accent hover:text-background transition-all duration-500 inline-block"
-                        >
-                            Send Resume
-                        </a>
-                    </ScrollReveal>
-                </div>
-            </section>
 
             <Footer />
         </main>
