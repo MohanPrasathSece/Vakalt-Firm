@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Calculator, IndianRupee, FileText, Scale, Table as TableIcon } from 'lucide-react';
+import { Calculator, IndianRupee, FileText, Scale, Table as TableIcon, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -28,73 +29,59 @@ interface FeeStructure {
 }
 
 // Court Fee Calculation Logic based on Himachal Pradesh Court Fees Act
-const calculateCourtFee = (amount: number): number => {
-    if (amount <= 0) return 0;
+const calculateCourtFee = (V: number): number => {
+    if (V <= 0) return 0;
+    if (V <= 5) return 1;
 
-    // Based on THE FIRST SCHEDULE - Ad valorem fees
-    if (amount <= 5) return 1;
-    if (amount <= 100) return Math.ceil((amount - 5) / 5);
+    if (V <= 100)
+        return 1 + Math.ceil((V - 5) / 5);
 
-    let fee = 19; // Fee up to 100
+    if (V <= 500)
+        return 20 + Math.ceil((V - 100) / 10);
 
-    if (amount <= 500) {
-        fee += Math.ceil((amount - 100) / 10);
-        return fee;
-    }
+    if (V <= 1000)
+        return 60 + Math.ceil((V - 500) / 10) * 2;
 
-    fee = 59; // Fee up to 500
+    if (V <= 5000)
+        return 160 + Math.ceil((V - 1000) / 100) * 15;
 
-    if (amount <= 1000) {
-        fee += Math.ceil((amount - 500) / 10) * 2;
-        return fee;
-    }
+    if (V <= 10000)
+        return 760 + Math.ceil((V - 5000) / 250) * 25;
 
-    fee = 159; // Fee up to 1000
+    if (V <= 20000)
+        return 1260 + Math.ceil((V - 10000) / 500) * 40;
 
-    if (amount <= 5000) {
-        fee += Math.ceil((amount - 1000) / 100) * 15;
-        return fee;
-    }
+    if (V <= 30000)
+        return 2060 + Math.ceil((V - 20000) / 1000) * 50;
 
-    fee = 759; // Fee up to 5000
+    if (V <= 50000)
+        return 2560 + Math.ceil((V - 30000) / 2000) * 50;
 
-    if (amount <= 10000) {
-        fee += Math.ceil((amount - 5000) / 250) * 25;
-        return fee;
-    }
+    if (V <= 400000)
+        return 3060 + Math.ceil((V - 50000) / 5000) * 50;
 
-    fee = 1259; // Fee up to 10000
+    return 6560 + Math.ceil((V - 400000) / 5000) * 50;
+};
 
-    if (amount <= 20000) {
-        fee += Math.ceil((amount - 10000) / 500) * 40;
-        return fee;
-    }
+// Helper to format numbers to words (Simple version for Indian context)
+const formatToWords = (num: number): string => {
+    const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 
-    fee = 2059; // Fee up to 20000
-
-    if (amount <= 30000) {
-        fee += Math.ceil((amount - 20000) / 1000) * 50;
-        return fee;
-    }
-
-    fee = 2559; // Fee up to 30000
-
-    if (amount <= 50000) {
-        fee += Math.ceil((amount - 30000) / 2000) * 50;
-        return fee;
-    }
-
-    fee = 3059; // Fee up to 50000
-
-    // Above 50000
-    fee += Math.ceil((amount - 50000) / 5000) * 50;
-
-    return fee;
+    const numStr = num.toString();
+    if (numStr.length > 9) return 'overflow';
+    const n = ('000000000' + numStr).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+    if (!n) return '';
+    let str = '';
+    str += (Number(n[1]) != 0) ? (a[Number(n[1])] || b[parseInt(n[1][0])] + ' ' + a[parseInt(n[1][1])]) + 'crore ' : '';
+    str += (Number(n[2]) != 0) ? (a[Number(n[2])] || b[parseInt(n[2][0])] + ' ' + a[parseInt(n[2][1])]) + 'lakh ' : '';
+    str += (Number(n[3]) != 0) ? (a[Number(n[3])] || b[parseInt(n[3][0])] + ' ' + a[parseInt(n[3][1])]) + 'thousand ' : '';
+    str += (Number(n[4]) != 0) ? (a[Number(n[4])] || b[parseInt(n[4][0])] + ' ' + a[parseInt(n[4][1])]) + 'hundred ' : '';
+    str += (Number(n[5]) != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[parseInt(n[5][0])] + ' ' + a[parseInt(n[5][1])]) : '';
+    return str.trim();
 };
 
 import { useQuery } from '@tanstack/react-query';
-
-// ... (keep the calculation logic unchanged)
 
 const CourtFeeCalculator = () => {
     const [caseType, setCaseType] = useState<string>("");
@@ -179,7 +166,7 @@ const CourtFeeCalculator = () => {
                             Court Fee Calculator
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">
-                            Calculate court fees for civil suits based on the Himachal Pradesh Court Fees Act.
+                            Calculate court fees for civil suits based on the latest ad valorem fee schedule.
                             Enter your claim amount and case type to get an instant fee calculation.
                         </p>
                     </div>
@@ -252,28 +239,45 @@ const CourtFeeCalculator = () => {
                                     </div>
                                 </div>
 
-                                {/* Result Display */}
                                 {calculatedFee !== null && (
-                                    <div className="mt-12 pt-10 border-t border-border">
-                                        <div className="bg-surface-dark p-8 rounded-[1.5rem]">
-                                            <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-3">
-                                                Calculated Court Fee
-                                            </p>
-                                            <div className="flex items-baseline gap-2">
-                                                <span className="text-sans text-display font-bold text-surface-dark-foreground">
-                                                    ₹{calculatedFee.toLocaleString('en-IN')}
-                                                </span>
-                                                <span className="text-sans text-body text-surface-charcoal-foreground/60">
-                                                    (Rupees {calculatedFee} only)
-                                                </span>
+                                    <AnimatePresence>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            className="mt-12 pt-10 border-t border-border"
+                                        >
+                                            <div className="bg-surface-dark p-8 rounded-[1.5rem] relative overflow-hidden group">
+                                                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                                                    <Scale size={120} />
+                                                </div>
+
+                                                <div className="relative z-10">
+                                                    <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-3 flex items-center gap-2">
+                                                        <CheckCircle2 size={14} className="text-emerald-500" />
+                                                        Calculated Court Fee
+                                                    </p>
+                                                    <div className="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-4">
+                                                        <motion.span
+                                                            key={calculatedFee}
+                                                            initial={{ scale: 0.9, opacity: 0 }}
+                                                            animate={{ scale: 1, opacity: 1 }}
+                                                            className="text-sans text-display font-bold text-surface-dark-foreground bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
+                                                        >
+                                                            ₹{calculatedFee.toLocaleString('en-IN')}
+                                                        </motion.span>
+                                                        <span className="text-sans text-body text-surface-charcoal-foreground/60 italic">
+                                                            (Rupees {formatToWords(calculatedFee)} only)
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sans text-sm text-surface-charcoal-foreground/50 mt-8 leading-relaxed border-l-2 border-surface-charcoal-foreground/20 pl-4">
+                                                        * This estimate is based on the standard ad valorem fee schedule.
+                                                        The final fee is subject to verification by the court registry.
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <p className="text-sans text-sm text-surface-charcoal-foreground/50 mt-6 leading-relaxed">
-                                                * This is an estimated fee based on the Himachal Pradesh Court Fees Act.
-                                                Actual fees may vary based on specific case circumstances. Please consult
-                                                with a legal professional for accurate fee determination.
-                                            </p>
-                                        </div>
-                                    </div>
+                                        </motion.div>
+                                    </AnimatePresence>
                                 )}
                             </div>
                         </div>
@@ -305,11 +309,13 @@ const CourtFeeCalculator = () => {
                                             Fee Schedule
                                         </h4>
                                         <ul className="text-sans text-sm text-surface-charcoal-foreground/60 leading-relaxed space-y-2">
-                                            <li>• Up to ₹5: ₹1</li>
-                                            <li>• ₹5 - ₹100: ₹1 per ₹5</li>
+                                            <li>• Up to ₹100: ₹1 per ₹5</li>
                                             <li>• ₹100 - ₹500: ₹1 per ₹10</li>
                                             <li>• ₹500 - ₹1,000: ₹2 per ₹10</li>
-                                            <li>• Above ₹1,000: Progressive rates apply</li>
+                                            <li>• ₹1,000 - ₹5,000: ₹15 per ₹100</li>
+                                            <li>• ₹5,000 - ₹10,000: ₹25 per ₹250</li>
+                                            <li>• ₹10,000 - ₹20,000: ₹40 per ₹500</li>
+                                            <li>• Above ₹20,000: Progressive rates apply</li>
                                         </ul>
                                     </div>
 
@@ -326,7 +332,7 @@ const CourtFeeCalculator = () => {
 
                                     <div className="border-t border-surface-charcoal-foreground/10 pt-8">
                                         <p className="text-sans text-xs text-surface-charcoal-foreground/40 leading-relaxed">
-                                            This calculator is based on the Himachal Pradesh Court Fees Act and provides
+                                            This calculator is based on the latest Court Fees Act schedule and provides
                                             estimates for informational purposes only. For official fee determination,
                                             please consult the court registry or a legal professional.
                                         </p>
