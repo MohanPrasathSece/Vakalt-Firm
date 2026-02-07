@@ -192,7 +192,7 @@ const CourtFeeCalculator = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
                         {/* Calculator Form */}
                         <div className="lg:col-span-7">
-                            <div className="bg-white border border-border p-10 lg:p-14 rounded-sm">
+                            <div className="bg-white border border-border p-10 lg:p-14 rounded-[2rem] shadow-xl shadow-black/5">
                                 <div className="flex items-center gap-3 mb-10 pb-6 border-b border-border">
                                     <Scale size={24} className="text-foreground" />
                                     <h2 className="text-sans text-subheading font-bold text-foreground">
@@ -239,7 +239,7 @@ const CourtFeeCalculator = () => {
                                         <Button
                                             onClick={handleCalculate}
                                             disabled={!caseType || !claimAmount}
-                                            className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-accent transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] bg-foreground text-background px-8 py-3 rounded-full hover:bg-zinc-800 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed w-auto min-w-[160px]"
                                         >
                                             Calculate Fee
                                         </Button>
@@ -255,7 +255,7 @@ const CourtFeeCalculator = () => {
                                 {/* Result Display */}
                                 {calculatedFee !== null && (
                                     <div className="mt-12 pt-10 border-t border-border">
-                                        <div className="bg-surface-dark p-8 rounded-sm">
+                                        <div className="bg-surface-dark p-8 rounded-[1.5rem]">
                                             <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-3">
                                                 Calculated Court Fee
                                             </p>

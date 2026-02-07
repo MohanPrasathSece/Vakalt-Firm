@@ -72,7 +72,7 @@ const InsightsPreview = () => {
             </div>
             <Link
               to="/insights"
-              className="text-sans text-label uppercase tracking-[0.1em] border border-foreground px-8 py-3 text-foreground hover:bg-foreground hover:text-background transition-all duration-500 self-start lg:self-auto"
+              className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] border border-foreground px-6 py-2.5 rounded-full text-foreground hover:bg-foreground hover:text-background transition-all duration-500 self-start lg:self-auto"
             >
               View All Articles
             </Link>

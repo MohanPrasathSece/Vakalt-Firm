@@ -64,13 +64,15 @@ const CareersPage = () => {
                                 <div className="flex gap-4">
                                     <Button
                                         onClick={() => window.location.href = '/careers/submit'}
-                                        className="bg-white text-black hover:bg-gray-200 font-bold uppercase text-xs tracking-widest px-6 py-3 rounded-none"
+                                        size="sm"
+                                        className="bg-white text-black hover:bg-gray-200 font-bold uppercase text-[10px] tracking-widest"
                                     >
                                         Post a Job
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className="border-white/20 text-white hover:bg-white/10 font-bold uppercase text-xs tracking-widest px-6 py-3 rounded-none"
+                                        size="sm"
+                                        className="bg-transparent border-white/20 text-white hover:bg-white/10 font-bold uppercase text-[10px] tracking-widest"
                                     >
                                         View Openings
                                     </Button>
@@ -92,7 +94,7 @@ const CareersPage = () => {
                     <div className="flex gap-2 lg:gap-3 flex-wrap">
                         <button
                             onClick={() => setFilterType("all")}
-                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded ${filterType === "all"
+                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded-full ${filterType === "all"
                                 ? "bg-foreground text-background shadow-md"
                                 : "bg-white text-muted-foreground border border-border hover:border-foreground"
                                 }`}
@@ -101,7 +103,7 @@ const CareersPage = () => {
                         </button>
                         <button
                             onClick={() => setFilterType("job")}
-                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded ${filterType === "job"
+                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded-full ${filterType === "job"
                                 ? "bg-foreground text-background shadow-md"
                                 : "bg-white text-muted-foreground border border-border hover:border-foreground"
                                 }`}
@@ -110,7 +112,7 @@ const CareersPage = () => {
                         </button>
                         <button
                             onClick={() => setFilterType("internship")}
-                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded ${filterType === "internship"
+                            className={`text-sans text-[11px] font-bold uppercase tracking-wider px-6 py-2 transition-all duration-300 rounded-full ${filterType === "internship"
                                 ? "bg-foreground text-background shadow-md"
                                 : "bg-white text-muted-foreground border border-border hover:border-foreground"
                                 }`}
@@ -187,7 +189,7 @@ const CareersPage = () => {
                                                         <p className="text-[11px] font-bold text-foreground">{formatDate(career.created_at)}</p>
                                                     </div>
                                                     <div className="h-8 w-px bg-border hidden md:block"></div>
-                                                    <button className="text-sans text-[10px] font-black uppercase tracking-widest bg-zinc-50 group-hover:bg-foreground group-hover:text-background px-6 py-3 border border-border group-hover:border-foreground transition-all flex items-center gap-2">
+                                                    <button className="text-sans text-[10px] font-black uppercase tracking-widest bg-zinc-50 group-hover:bg-foreground group-hover:text-background px-4 py-2 rounded-full border border-border group-hover:border-foreground transition-all flex items-center gap-2">
                                                         View & Apply
                                                         <ChevronRight size={12} strokeWidth={3} />
                                                     </button>
@@ -322,9 +324,9 @@ const CareersPage = () => {
                                                         </div>
                                                         <button
                                                             type="submit"
-                                                            className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-zinc-800 transition-all duration-500 inline-flex items-center gap-2 w-full justify-center"
+                                                            className="text-sans text-[10px] font-bold uppercase tracking-[0.1em] bg-foreground text-background px-8 py-3 hover:bg-zinc-800 transition-all duration-500 inline-flex items-center gap-2 rounded-full mx-auto w-auto min-w-[200px] justify-center"
                                                         >
-                                                            <Mail size={18} />
+                                                            <Mail size={16} />
                                                             Submit Application
                                                         </button>
                                                     </form>

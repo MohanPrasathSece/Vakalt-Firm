@@ -200,9 +200,9 @@ const CourtVCLinks = () => {
                                                     href={link.vc_link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-6 py-4 hover:bg-accent transition-all duration-500 inline-flex items-center justify-center gap-2 w-full"
+                                                    className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] bg-foreground text-background px-6 py-3 rounded-full hover:bg-zinc-800 transition-all duration-500 inline-flex items-center justify-center gap-2 w-full"
                                                 >
-                                                    <Video size={18} />
+                                                    <Video size={16} />
                                                     Join VC
                                                     <ExternalLink size={14} />
                                                 </a>

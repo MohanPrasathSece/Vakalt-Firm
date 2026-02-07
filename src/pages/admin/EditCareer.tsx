@@ -131,9 +131,9 @@ const EditCareer = () => {
                         <Button
                             onClick={handleSave}
                             disabled={saving}
-                            className="bg-black text-white hover:bg-gray-800 rounded-2xl h-12 px-8 font-bold shadow-xl shadow-black/10 gap-2 transition-all active:scale-95"
+                            className="bg-black text-white hover:bg-gray-800 rounded-full h-11 px-6 text-sm font-bold shadow-xl shadow-black/10 gap-2 transition-all active:scale-95"
                         >
-                            <Save size={18} />
+                            <Save size={16} />
                             {saving ? 'Saving...' : 'Save Posting'}
                         </Button>
                     </div>

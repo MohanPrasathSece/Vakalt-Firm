@@ -66,7 +66,7 @@ const PoliceStationsPage = () => {
             <div className="bg-white border-b border-slate-200 pt-32 pb-12">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <div className="flex items-center gap-4 mb-4">
-                        <div className="p-2 bg-slate-800 text-white rounded">
+                        <div className="p-2 bg-slate-800 text-white rounded-lg">
                             <Building2 size={24} />
                         </div>
                         <div>
@@ -82,14 +82,14 @@ const PoliceStationsPage = () => {
 
                     {/* Left: Search Controls */}
                     <div className="lg:col-span-5 space-y-6">
-                        <div className="bg-white border border-slate-200 rounded-lg p-6 shadow-sm">
+                        <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 shadow-sm">
                             <h2 className="text-[10px] font-black text-slate-400 uppercase mb-6 border-b border-slate-100 pb-3 tracking-[0.2em] font-sans">Search Parameters</h2>
 
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Select State/UT</label>
                                     <select
-                                        className="w-full h-11 bg-slate-50 border border-slate-300 rounded px-3 text-sm focus:ring-1 focus:ring-slate-400 outline-none"
+                                        className="w-full h-11 bg-slate-50 border border-slate-300 rounded-full px-4 text-sm focus:ring-1 focus:ring-slate-400 outline-none"
                                         value={region}
                                         onChange={(e) => setRegion(e.target.value)}
                                     >
@@ -108,7 +108,7 @@ const PoliceStationsPage = () => {
                                         <input
                                             type="text"
                                             placeholder="Enter station name..."
-                                            className="w-full h-11 bg-white border border-slate-300 rounded pl-10 pr-4 text-sm font-bold text-slate-800 focus:border-slate-800 outline-none transition-all font-sans"
+                                            className="w-full h-11 bg-white border border-slate-300 rounded-full pl-10 pr-4 text-sm font-bold text-slate-800 focus:border-slate-800 outline-none transition-all font-sans"
                                             value={searchQuery}
                                             onChange={(e) => {
                                                 setSearchQuery(e.target.value);
@@ -152,7 +152,7 @@ const PoliceStationsPage = () => {
                                         console.log("Selected:", station.station_name);
                                         setSelectedStation(station);
                                     }}
-                                    className={`w-full text-left p-4 rounded-lg border transition-all flex items-center justify-between group font-sans ${selectedStation?.id === station.id
+                                    className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between group font-sans ${selectedStation?.id === station.id
                                         ? "bg-slate-900 border-slate-900 shadow-lg scale-[1.01]"
                                         : "bg-white border-slate-200 hover:border-slate-400"
                                         }`}
@@ -174,7 +174,7 @@ const PoliceStationsPage = () => {
                     {/* Right: Detailed View */}
                     <div className="lg:col-span-7">
                         {selectedStation ? (
-                            <div className="bg-white border-2 border-slate-900 rounded-lg overflow-hidden shadow-lg animate-in fade-in zoom-in-95 duration-200">
+                            <div className="bg-white border-2 border-slate-900 rounded-[2rem] overflow-hidden shadow-lg animate-in fade-in zoom-in-95 duration-200">
                                 <div className="bg-slate-900 p-6 text-white flex justify-between items-center">
                                     <div>
                                         <h2 className="text-xl font-black uppercase tracking-tight font-sans">{selectedStation.station_name}</h2>

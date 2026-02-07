@@ -59,16 +59,16 @@ const Hero = () => {
           <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-md">
             Modern legal insight and representation built for individuals and businesses navigating complex legal environments.
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <Link
               to="/contact"
-              className="text-sans text-label uppercase tracking-[0.1em] bg-surface-dark-foreground text-surface-dark px-8 py-4 hover:bg-surface-charcoal-foreground transition-all duration-500"
+              className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] bg-surface-dark-foreground text-surface-dark px-6 py-3 rounded-full hover:bg-zinc-200 transition-all duration-500"
             >
               Ask a Legal Question
             </Link>
             <Link
               to="/insights"
-              className="text-sans text-label uppercase tracking-[0.1em] border border-surface-charcoal-foreground/30 text-surface-dark-foreground px-8 py-4 hover:border-surface-dark-foreground transition-all duration-500"
+              className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] border border-surface-charcoal-foreground/30 text-surface-dark-foreground px-6 py-3 rounded-full hover:border-surface-dark-foreground transition-all duration-500"
             >
               Explore Insights
             </Link>

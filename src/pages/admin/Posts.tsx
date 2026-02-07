@@ -122,7 +122,7 @@ const Posts = () => {
                     </div>
                     <Button
                         onClick={() => navigate('/admin/posts/new')}
-                        className="bg-black text-white hover:bg-gray-800 rounded-xl px-6 h-12 font-semibold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
+                        className="bg-black text-white hover:bg-gray-800 rounded-full px-6 h-11 text-sm font-bold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
                     >
                         <Plus size={18} /> New Article
                     </Button>
@@ -135,13 +135,13 @@ const Posts = () => {
                             placeholder="Find publications..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white border-gray-200 pl-11 h-12 rounded-xl focus:ring-1 focus:ring-black focus:border-black transition-all"
+                            className="bg-white border-gray-200 pl-11 h-11 rounded-full focus:ring-1 focus:ring-black focus:border-black transition-all"
                         />
                     </div>
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="h-12 rounded-xl border-gray-200 font-medium px-6 gap-2 hover:bg-white hover:border-black transition-all">
+                            <Button variant="outline" className="h-11 rounded-full border-gray-200 font-bold px-6 gap-2 hover:bg-white hover:border-black transition-all text-[11px] uppercase tracking-wider">
                                 <Filter size={18} />
                                 {selectedCategory === "all" ? "All Categories" :
                                     selectedCategory === "uncategorized" ? "Uncategorized" :
@@ -175,7 +175,7 @@ const Posts = () => {
 
                     <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
                         <DialogTrigger asChild>
-                            <Button variant="outline" className="h-12 rounded-xl border-gray-200 font-medium px-6 gap-2 hover:bg-white hover:border-black transition-all">
+                            <Button variant="outline" className="h-11 rounded-full border-gray-200 font-bold px-6 gap-2 hover:bg-white hover:border-black transition-all text-[11px] uppercase tracking-wider">
                                 <Tag size={18} /> Add Category
                             </Button>
                         </DialogTrigger>
@@ -196,10 +196,10 @@ const Posts = () => {
                                     />
                                 </div>
                                 <div className="flex gap-2 justify-end">
-                                    <Button variant="outline" onClick={() => setShowCategoryDialog(false)} className="rounded-xl">
+                                    <Button variant="outline" onClick={() => setShowCategoryDialog(false)} className="rounded-full h-11 px-6 font-bold text-xs uppercase tracking-widest">
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleAddCategory} className="bg-black text-white hover:bg-gray-800 rounded-xl">
+                                    <Button onClick={handleAddCategory} className="bg-black text-white hover:bg-gray-800 rounded-full h-11 px-6 font-bold text-xs uppercase tracking-widest">
                                         Create Category
                                     </Button>
                                 </div>
@@ -249,7 +249,7 @@ const Posts = () => {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex justify-center">
-                                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-wider ${post.status === 'published'
+                                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wider ${post.status === 'published'
                                                     ? 'bg-green-50 text-green-600 border border-green-100'
                                                     : 'bg-orange-50 text-orange-600 border border-orange-100'
                                                     }`}>
@@ -266,7 +266,7 @@ const Posts = () => {
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
-                                                    className="w-9 h-9 rounded-lg border-gray-200 hover:border-black transition-all"
+                                                    className="w-9 h-9 rounded-full border-gray-200 hover:border-black transition-all"
                                                     onClick={() => navigate(`/admin/posts/${post.id}`)}
                                                 >
                                                     <Edit3 size={16} />
@@ -274,7 +274,7 @@ const Posts = () => {
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
-                                                    className="w-9 h-9 rounded-lg border-gray-200 hover:text-blue-600 hover:border-blue-200 transition-all"
+                                                    className="w-9 h-9 rounded-full border-gray-200 hover:text-blue-600 hover:border-blue-200 transition-all"
                                                     onClick={() => window.open(`/insights/${post.slug}`, '_blank')}
                                                 >
                                                     <ArrowUpRight size={16} />

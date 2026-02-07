@@ -65,7 +65,7 @@ const Dashboard = () => {
                     </div>
                     <Button
                         onClick={() => navigate('/admin/posts/new')}
-                        className="bg-black text-white hover:bg-gray-800 rounded-xl px-6 h-12 font-semibold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
+                        className="bg-black text-white hover:bg-gray-800 rounded-full px-6 h-11 text-sm font-bold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
                     >
                         <Plus size={18} /> New Publication
                     </Button>

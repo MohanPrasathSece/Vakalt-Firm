@@ -284,7 +284,7 @@ const SubmitJob = () => {
                             <div className="pt-6">
                                 <Button
                                     type="submit"
-                                    className="w-full bg-foreground text-background hover:bg-zinc-800 h-14 text-lg font-bold uppercase tracking-widest"
+                                    className="mx-auto flex w-auto min-w-[240px] bg-foreground text-background hover:bg-zinc-800 h-12 text-sm font-bold uppercase tracking-widest rounded-full"
                                     disabled={submitting}
                                 >
                                     {submitting ? "Submitting..." : "Submit for Approval"}

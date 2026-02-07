@@ -106,7 +106,7 @@ const Tools = () => {
                             </p>
                             <Link
                                 to="/contact"
-                                className="text-sans text-label uppercase tracking-[0.1em] bg-surface-dark-foreground text-surface-dark px-12 py-5 hover:bg-accent hover:text-background transition-all duration-500 inline-block"
+                                className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] bg-surface-dark-foreground text-surface-dark px-10 py-3.5 rounded-full hover:bg-zinc-200 transition-all duration-500 inline-block"
                             >
                                 Contact Us
                             </Link>

@@ -105,7 +105,7 @@ const Careers = () => {
                     </div>
                     <Button
                         onClick={() => navigate('/admin/careers/new')}
-                        className="bg-black text-white hover:bg-gray-800 rounded-xl px-6 h-12 font-semibold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
+                        className="bg-black text-white hover:bg-gray-800 rounded-full px-6 h-11 text-sm font-bold shadow-lg shadow-black/10 gap-2 transition-all active:scale-95"
                     >
                         <Plus size={18} /> New Posting
                     </Button>
@@ -117,9 +117,9 @@ const Careers = () => {
                             <button
                                 key={status}
                                 onClick={() => setStatusFilter(status)}
-                                className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-all whitespace-nowrap ${statusFilter === status
-                                        ? 'bg-white text-black shadow-sm'
-                                        : 'text-gray-500 hover:text-black'
+                                className={`px-4 py-2 rounded-full text-sm font-bold capitalize transition-all whitespace-nowrap ${statusFilter === status
+                                    ? 'bg-white text-black shadow-sm'
+                                    : 'text-gray-500 hover:text-black'
                                     }`}
                             >
                                 {status} <span className="ml-1 opacity-50 text-xs">
@@ -135,7 +135,7 @@ const Careers = () => {
                             placeholder="Search postings..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white border-gray-200 pl-11 h-12 rounded-xl focus:ring-1 focus:ring-black focus:border-black transition-all"
+                            className="bg-white border-gray-200 pl-11 h-11 rounded-full focus:ring-1 focus:ring-black focus:border-black transition-all"
                         />
                     </div>
                 </div>
@@ -210,7 +210,7 @@ const Careers = () => {
                                                 {career.status === 'pending' && (
                                                     <Button
                                                         size="sm"
-                                                        className="mr-2 h-9 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold"
+                                                        className="mr-2 h-8 bg-green-600 hover:bg-green-700 text-white rounded-full text-[10px] font-black uppercase tracking-widest px-4"
                                                         onClick={() => handleStatusToggle(career.id, 'active')} // force to active
                                                     >
                                                         Approve
@@ -219,7 +219,7 @@ const Careers = () => {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="w-9 h-9 text-gray-400 hover:text-black hover:bg-white border hover:border-gray-200 rounded-lg transition-all"
+                                                    className="w-9 h-9 text-gray-400 hover:text-black hover:bg-white border hover:border-gray-200 rounded-full transition-all"
                                                     onClick={() => navigate(`/admin/careers/${career.id}`)}
                                                 >
                                                     <Edit3 size={14} />
@@ -227,7 +227,7 @@ const Careers = () => {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border hover:border-red-100 rounded-lg transition-all"
+                                                    className="w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border hover:border-red-100 rounded-full transition-all"
                                                     onClick={() => handleDelete(career.id)}
                                                 >
                                                     <Trash2 size={14} />

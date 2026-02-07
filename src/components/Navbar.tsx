@@ -94,7 +94,7 @@ const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
             <Link
               to="/contact"
               onClick={() => handleLinkClick('/contact')}
-              className={`hidden lg:inline-block text-sans text-sm tracking-[0.1em] uppercase border px-8 py-3 transition-all duration-500 ${borderColorClass} ${textColorClass} ${hoverBgClass}`}
+              className={`hidden lg:inline-block text-sans text-[10px] font-bold tracking-[0.1em] uppercase border px-6 py-2.5 rounded-full transition-all duration-500 ${borderColorClass} ${textColorClass} ${hoverBgClass}`}
             >
               Consult Now
             </Link>
@@ -265,7 +265,7 @@ const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
                 <Link
                   to="/contact"
                   onClick={() => handleLinkClick('/contact')}
-                  className="text-sans text-label uppercase border border-surface-charcoal-foreground/30 px-10 py-4 text-surface-dark-foreground hover:bg-surface-dark-foreground hover:text-surface-dark transition-all duration-500 mt-8 inline-block"
+                  className="text-sans text-[10px] font-bold uppercase border border-surface-charcoal-foreground/30 px-10 py-3.5 rounded-full text-surface-dark-foreground hover:bg-surface-dark-foreground hover:text-surface-dark transition-all duration-500 mt-8 inline-block"
                 >
                   Schedule Consultation
                 </Link>

@@ -31,7 +31,7 @@ const ContactCTA = () => {
         <ScrollReveal delay={0.3}>
           <Link
             to="/contact"
-            className="inline-block text-sans text-label uppercase tracking-[0.15em] bg-surface-dark-foreground text-surface-dark px-12 py-5 hover:bg-surface-charcoal-foreground transition-all duration-500"
+            className="inline-block text-sans text-[10px] font-bold uppercase tracking-[0.15em] bg-surface-dark-foreground text-surface-dark px-10 py-3.5 rounded-full hover:bg-zinc-200 transition-all duration-500"
           >
             Schedule Consultation
           </Link>

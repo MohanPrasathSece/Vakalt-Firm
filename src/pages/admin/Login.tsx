@@ -57,7 +57,7 @@ const Login = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                         placeholder="admin@vakalt.com"
-                                        className="h-14 bg-gray-50 border-gray-100 focus:border-black rounded-xl pl-12 font-bold transition-all"
+                                        className="h-12 bg-gray-50 border-gray-100 focus:border-black rounded-full pl-12 font-bold transition-all"
                                     />
                                 </div>
                             </div>
@@ -72,7 +72,7 @@ const Login = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
                                         placeholder="••••••••"
-                                        className="h-14 bg-gray-50 border-gray-100 focus:border-black rounded-xl pl-12 font-bold transition-all"
+                                        className="h-12 bg-gray-50 border-gray-100 focus:border-black rounded-full pl-12 font-bold transition-all"
                                     />
                                 </div>
                             </div>
@@ -81,7 +81,7 @@ const Login = () => {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-14 bg-black text-white hover:bg-gray-800 rounded-xl font-bold text-lg group transition-all shadow-xl shadow-black/10 active:scale-95"
+                            className="w-full h-12 bg-black text-white hover:bg-gray-800 rounded-full font-bold text-base group transition-all shadow-xl shadow-black/10 active:scale-95"
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>

@@ -245,7 +245,7 @@ const EditPost = () => {
                         <Button
                             variant="ghost"
                             onClick={() => navigate('/admin/posts')}
-                            className="w-10 h-10 p-0 hover:bg-white border border-gray-200 rounded-xl transition-all"
+                            className="w-10 h-10 p-0 hover:bg-white border border-gray-200 rounded-full transition-all"
                         >
                             <ArrowLeft size={18} />
                         </Button>
@@ -259,7 +259,7 @@ const EditPost = () => {
                         <Button
                             onClick={handleSave}
                             disabled={saving}
-                            className="bg-black text-white hover:bg-gray-800 rounded-2xl h-12 px-8 font-bold shadow-xl shadow-black/10 gap-2 transition-all active:scale-95"
+                            className="bg-black text-white hover:bg-gray-800 rounded-full h-11 px-8 font-bold shadow-xl shadow-black/10 gap-2 transition-all active:scale-95"
                         >
                             <Save size={18} />
                             {saving ? 'Syncing...' : 'Save Changes'}
@@ -297,13 +297,13 @@ const EditPost = () => {
                                     value={excerpt}
                                     onChange={(e) => setExcerpt(e.target.value)}
                                     placeholder="Write a brief overview for cards..."
-                                    className="bg-gray-50/50 border-gray-100 focus:border-black rounded-2xl min-h-[100px] text-gray-700 leading-relaxed font-medium p-4 transition-all"
+                                    className="bg-gray-50/50 border-gray-100 focus:border-black rounded-[1.5rem] min-h-[100px] text-gray-700 leading-relaxed font-medium p-6 transition-all"
                                 />
                             </div>
 
                             <div className="space-y-3">
                                 <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Content Editor</Label>
-                                <div className="editor-container rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-inner">
+                                <div className="editor-container rounded-[2rem] overflow-hidden border border-gray-200 bg-white shadow-inner">
                                     <ReactQuill
                                         ref={quillRef}
                                         theme="snow"
@@ -325,11 +325,11 @@ const EditPost = () => {
                             <div className="grid grid-cols-1 gap-6">
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold text-gray-600">SEO Title</Label>
-                                    <Input value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} className="rounded-xl border-gray-200 bg-gray-50/30" />
+                                    <Input value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} className="rounded-full h-11 px-6 border-gray-200 bg-gray-50/30" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold text-gray-600">Meta Description</Label>
-                                    <Textarea value={seoDesc} onChange={(e) => setSeoDesc(e.target.value)} className="rounded-xl border-gray-200 bg-gray-50/30" />
+                                    <Textarea value={seoDesc} onChange={(e) => setSeoDesc(e.target.value)} className="rounded-[1.5rem] border-gray-200 bg-gray-50/30 p-6" />
                                 </div>
                             </div>
                         </div>
@@ -340,16 +340,16 @@ const EditPost = () => {
                         <div className="bg-white border border-gray-200 p-6 rounded-3xl shadow-sm space-y-6">
                             <div className="space-y-4">
                                 <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Publication Status</Label>
-                                <div className="grid grid-cols-2 gap-2 bg-gray-50 p-1 rounded-xl border border-gray-100">
+                                <div className="grid grid-cols-2 gap-2 bg-gray-50 p-1 rounded-full border border-gray-100">
                                     <button
                                         onClick={() => setStatus('draft')}
-                                        className={`py-2 px-4 rounded-lg text-xs font-bold transition-all ${status === 'draft' ? "bg-white text-black shadow-sm" : "text-gray-400"}`}
+                                        className={`py-2 px-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${status === 'draft' ? "bg-white text-black shadow-sm" : "text-gray-400"}`}
                                     >
                                         Draft
                                     </button>
                                     <button
                                         onClick={() => setStatus('published')}
-                                        className={`py-2 px-4 rounded-lg text-xs font-bold transition-all ${status === 'published' ? "bg-black text-white shadow-lg" : "text-gray-400"}`}
+                                        className={`py-2 px-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${status === 'published' ? "bg-black text-white shadow-lg" : "text-gray-400"}`}
                                     >
                                         Live
                                     </button>
@@ -361,7 +361,7 @@ const EditPost = () => {
                                 <select
                                     value={category}
                                     onChange={(e) => setCategory(e.target.value)}
-                                    className="w-full bg-gray-50 border border-gray-100 rounded-xl h-11 px-4 text-sm font-bold focus:outline-none focus:border-black appearance-none"
+                                    className="w-full bg-gray-50 border border-gray-100 rounded-full h-11 px-6 text-sm font-bold focus:outline-none focus:border-black appearance-none"
                                 >
                                     <option value="Uncategorized">Uncategorized</option>
                                     {categories.map(cat => <option key={cat.id} value={cat.name}>{cat.name}</option>)}
@@ -372,7 +372,7 @@ const EditPost = () => {
                                 <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Read Time</Label>
                                 <div className="relative">
                                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    <Input value={readTime} onChange={(e) => setReadTime(e.target.value)} className="bg-gray-50 border-gray-100 pl-11 h-11 rounded-xl text-sm font-bold" />
+                                    <Input value={readTime} onChange={(e) => setReadTime(e.target.value)} className="bg-gray-50 border-gray-100 pl-11 h-11 rounded-full text-sm font-bold" />
                                 </div>
                             </div>
 
@@ -423,7 +423,7 @@ const EditPost = () => {
 
                         <Button
                             variant="outline"
-                            className="w-full h-12 rounded-2xl border-gray-200 hover:border-black font-bold gap-2 transition-all"
+                            className="w-full h-11 rounded-full border-gray-200 hover:border-black font-bold gap-2 transition-all text-xs uppercase tracking-widest"
                             onClick={() => window.open(`/insights/${slug}`, '_blank')}
                         >
                             <Eye size={18} /> View Live Draft

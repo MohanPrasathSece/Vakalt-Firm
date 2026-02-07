@@ -92,10 +92,10 @@ const Categories = () => {
                                         placeholder="e.g., Corporate Law"
                                         value={newName}
                                         onChange={(e) => setNewName(e.target.value)}
-                                        className="h-12 bg-gray-50/50 rounded-xl"
+                                        className="h-11 bg-gray-50/50 rounded-full px-6 text-sm font-bold"
                                     />
                                 </div>
-                                <Button onClick={handleAdd} className="w-full bg-black text-white hover:bg-gray-800 h-12 rounded-xl font-bold gap-2 shadow-xl shadow-black/5 transition-all active:scale-95">
+                                <Button onClick={handleAdd} className="w-full bg-black text-white hover:bg-gray-800 h-11 rounded-full font-bold gap-2 shadow-xl shadow-black/5 transition-all active:scale-95 text-xs uppercase tracking-widest">
                                     <Plus size={18} /> Create Category
                                 </Button>
                             </div>
@@ -144,11 +144,11 @@ const Categories = () => {
                                                             <Input
                                                                 value={editValue}
                                                                 onChange={(e) => setEditValue(e.target.value)}
-                                                                className="h-10 bg-white border-black rounded-lg font-bold"
+                                                                className="h-10 bg-white border-black rounded-full px-4 font-bold"
                                                                 autoFocus
                                                             />
-                                                            <Button variant="outline" size="icon" onClick={() => handleUpdate(cat.id)} className="shrink-0 rounded-lg hover:border-black"><Save size={16} /></Button>
-                                                            <Button variant="ghost" size="icon" onClick={() => setEditingId(null)} className="shrink-0 rounded-lg"><X size={16} /></Button>
+                                                            <Button variant="outline" size="icon" onClick={() => handleUpdate(cat.id)} className="shrink-0 rounded-full hover:border-black"><Save size={16} /></Button>
+                                                            <Button variant="ghost" size="icon" onClick={() => setEditingId(null)} className="shrink-0 rounded-full"><X size={16} /></Button>
                                                         </div>
                                                     ) : (
                                                         <div className="flex items-center gap-3">
@@ -160,10 +160,10 @@ const Categories = () => {
                                                 </div>
                                                 {editingId !== cat.id && (
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-400 hover:text-black hover:bg-white border hover:border-gray-200 rounded-lg transition-all" onClick={() => { setEditingId(cat.id); setEditValue(cat.name); }}>
+                                                        <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-400 hover:text-black hover:bg-white border hover:border-gray-200 rounded-full transition-all" onClick={() => { setEditingId(cat.id); setEditValue(cat.name); }}>
                                                             <Edit2 size={14} />
                                                         </Button>
-                                                        <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border hover:border-red-100 rounded-lg transition-all" onClick={() => handleDelete(cat.id)}>
+                                                        <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border hover:border-red-100 rounded-full transition-all" onClick={() => handleDelete(cat.id)}>
                                                             <Trash2 size={14} />
                                                         </Button>
                                                     </div>
