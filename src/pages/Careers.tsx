@@ -78,8 +78,8 @@ const CareersPage = () => {
                         <button
                             onClick={() => setFilterType("all")}
                             className={`text-sans text-label uppercase tracking-[0.1em] px-8 py-3 transition-all duration-300 ${filterType === "all"
-                                    ? "bg-foreground text-background"
-                                    : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
+                                ? "bg-foreground text-background"
+                                : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
                                 }`}
                         >
                             All Positions
@@ -87,8 +87,8 @@ const CareersPage = () => {
                         <button
                             onClick={() => setFilterType("job")}
                             className={`text-sans text-label uppercase tracking-[0.1em] px-8 py-3 transition-all duration-300 ${filterType === "job"
-                                    ? "bg-foreground text-background"
-                                    : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
+                                ? "bg-foreground text-background"
+                                : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
                                 }`}
                         >
                             Jobs
@@ -96,8 +96,8 @@ const CareersPage = () => {
                         <button
                             onClick={() => setFilterType("internship")}
                             className={`text-sans text-label uppercase tracking-[0.1em] px-8 py-3 transition-all duration-300 ${filterType === "internship"
-                                    ? "bg-foreground text-background"
-                                    : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
+                                ? "bg-foreground text-background"
+                                : "bg-transparent text-muted-foreground border border-border hover:border-foreground"
                                 }`}
                         >
                             Internships
@@ -242,13 +242,81 @@ const CareersPage = () => {
                                                     )}
 
                                                     <div className="pt-6 border-t border-border">
-                                                        <a
-                                                            href={`mailto:contact@vakalt.com?subject=Application for ${career.title}&body=Dear Hiring Team,%0D%0A%0D%0AI am writing to express my interest in the ${career.title} position.%0D%0A%0D%0A`}
-                                                            className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-accent transition-all duration-500 inline-flex items-center gap-2"
+                                                        <h4 className="text-sans text-body font-semibold mb-6">Apply for this Position</h4>
+                                                        <form
+                                                            onSubmit={async (e) => {
+                                                                e.preventDefault();
+                                                                const formData = new FormData(e.currentTarget);
+                                                                const applicationData = {
+                                                                    career_id: career.id,
+                                                                    applicant_name: formData.get('name') as string,
+                                                                    applicant_email: formData.get('email') as string,
+                                                                    applicant_phone: formData.get('phone') as string,
+                                                                    cover_letter: formData.get('message') as string,
+                                                                };
+
+                                                                const { error } = await supabase
+                                                                    .from('career_applications')
+                                                                    .insert([applicationData]);
+
+                                                                if (error) {
+                                                                    alert("Error submitting application: " + error.message);
+                                                                } else {
+                                                                    alert("Application submitted successfully!");
+                                                                    (e.target as HTMLFormElement).reset();
+                                                                }
+                                                            }}
+                                                            className="space-y-4"
                                                         >
-                                                            <Mail size={18} />
-                                                            Apply Now
-                                                        </a>
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                <div className="space-y-2">
+                                                                    <label className="text-xs uppercase font-semibold text-muted-foreground">Full Name</label>
+                                                                    <input
+                                                                        required
+                                                                        name="name"
+                                                                        placeholder="John Doe"
+                                                                        className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <label className="text-xs uppercase font-semibold text-muted-foreground">Email Address</label>
+                                                                    <input
+                                                                        required
+                                                                        type="email"
+                                                                        name="email"
+                                                                        placeholder="john@example.com"
+                                                                        className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <label className="text-xs uppercase font-semibold text-muted-foreground">Phone Number</label>
+                                                                <input
+                                                                    required
+                                                                    type="tel"
+                                                                    name="phone"
+                                                                    placeholder="+91 98765 43210"
+                                                                    className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <label className="text-xs uppercase font-semibold text-muted-foreground">Cover Letter / Message</label>
+                                                                <textarea
+                                                                    required
+                                                                    name="message"
+                                                                    rows={4}
+                                                                    placeholder="Tell us why you're a good fit..."
+                                                                    className="w-full bg-white border border-border p-3 text-sm focus:outline-none focus:border-foreground"
+                                                                ></textarea>
+                                                            </div>
+                                                            <button
+                                                                type="submit"
+                                                                className="text-sans text-label uppercase tracking-[0.1em] bg-foreground text-background px-12 py-5 hover:bg-accent transition-all duration-500 inline-flex items-center gap-2 w-full justify-center"
+                                                            >
+                                                                <Mail size={18} />
+                                                                Submit Application
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </DialogContent>

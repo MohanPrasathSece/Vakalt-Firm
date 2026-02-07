@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Insights", href: "/insights" },
   { label: "Tools", href: "/tools" },
+  { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -19,7 +20,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
   const searchBtnRef = useRef<HTMLButtonElement>(null);
-  const isLightHero = location.pathname === "/tools";
+  const isLightHero = false; // All pages currently use dark heroes or standard scrolling
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);

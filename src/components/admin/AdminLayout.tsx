@@ -11,7 +11,8 @@ import {
     ExternalLink,
     ChevronRight,
     User,
-    Briefcase
+    Briefcase,
+    Inbox
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -45,6 +46,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         { label: "Blog Posts", icon: FileText, path: "/admin/posts" },
         { label: "Categories", icon: Settings, path: "/admin/categories" },
         { label: "Careers", icon: Briefcase, path: "/admin/careers" },
+        { label: "Job Applications", icon: Inbox, path: "/admin/applications" },
     ];
 
     if (loading) {

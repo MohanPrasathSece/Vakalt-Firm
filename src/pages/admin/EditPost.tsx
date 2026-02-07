@@ -99,35 +99,33 @@ const EditPost = () => {
     };
 
     const uploadFile = async (file: File) => {
+        // Cloudinary configuration - should be moved to .env
+        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dx2q3cxrn';
+        const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'vakalt_unsigned';
+
+        if (!cloudName || cloudName === 'YOUR_CLOUD_NAME') {
+            console.warn('Cloudinary Cloud Name not configured correctly.');
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', uploadPreset);
+
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.floor(Math.random() * 10000)}.${fileExt}`;
-            const filePath = fileName;
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: 'POST',
+                body: formData,
+            });
 
-            console.log('Uploading file:', fileName);
-
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('blog-images')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
-
-            if (uploadError) {
-                console.error('Upload error:', uploadError);
-                throw new Error(uploadError.message || 'Upload failed');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || 'Cloudinary upload failed');
             }
 
-            console.log('Upload successful:', uploadData);
-
-            const { data } = supabase.storage
-                .from('blog-images')
-                .getPublicUrl(filePath);
-
-            console.log('Public URL:', data.publicUrl);
-            return data.publicUrl;
+            const data = await response.json();
+            return data.secure_url;
         } catch (error: any) {
-            console.error('File upload error:', error);
+            console.error('Cloudinary upload error:', error);
             throw error;
         }
     };

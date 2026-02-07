@@ -1,160 +1,120 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import { Calculator, FileText, Video, Building, Scale, ChevronRight } from "lucide-react";
 
-const courtTypes = [
-    { label: "District Court", multiplier: 1 },
-    { label: "High Court", multiplier: 2.5 },
-    { label: "Supreme Court", multiplier: 5 },
-];
-
-const caseTypes = [
-    { label: "Civil Suit", baseFee: 500 },
-    { label: "Criminal Appeal", baseFee: 300 },
-    { label: "Writ Petition", baseFee: 400 },
-    { label: "Motor Accident Claim", baseFee: 200 },
-    { label: "Family Matter", baseFee: 350 },
+const tools = [
+    {
+        title: "Court Fee Calculator",
+        description: "Calculate court fees for civil suits based on the Himachal Pradesh Court Fees Act. Get instant fee calculations with comprehensive fee structure tables.",
+        icon: Calculator,
+        link: "/tools/court-fee-calculator",
+        color: "bg-blue-50 text-blue-600"
+    },
+    {
+        title: "Legal Drafts Library",
+        description: "Download ready-made legal templates and documents. Access professionally drafted bail applications, agreements, petitions, notices, and more.",
+        icon: FileText,
+        link: "/tools/legal-drafts",
+        color: "bg-green-50 text-green-600"
+    },
+    {
+        title: "Court VC Links",
+        description: "Find video conferencing links for courts across India. Search by judge name to quickly access virtual court hearings.",
+        icon: Video,
+        link: "/tools/court-vc-links",
+        color: "bg-purple-50 text-purple-600"
+    },
+    {
+        title: "Police Stations Directory",
+        description: "Comprehensive directory of police stations with their jurisdictional courts. Essential information for legal proceedings and case filing.",
+        icon: Building,
+        link: "/tools/police-stations",
+        color: "bg-orange-50 text-orange-600"
+    }
 ];
 
 const Tools = () => {
-    const [selectedCourt, setSelectedCourt] = useState(0);
-    const [selectedCase, setSelectedCase] = useState(0);
-    const [claimAmount, setClaimAmount] = useState("");
-
-    const calculateFee = () => {
-        const amount = parseFloat(claimAmount) || 0;
-        let fee = 0;
-
-        if (amount <= 50000) {
-            fee = amount * 0.03;
-        } else if (amount <= 300000) {
-            fee = (50000 * 0.03) + (amount - 50000) * 0.04;
-        } else {
-            fee = (50000 * 0.03) + (250000 * 0.04) + (amount - 300000) * 0.06;
-        }
-
-        return Math.round(fee);
-    };
-
-    const fee = calculateFee();
-
     return (
         <main>
             <Navbar />
 
-            {/* Hero */}
-            <section className="bg-surface-offwhite pt-36 pb-20 lg:pt-48 lg:pb-28">
+            {/* Hero Section */}
+            <section className="bg-surface-dark pt-36 pb-20 lg:pt-48 lg:pb-28">
                 <div className="container mx-auto px-6 lg:px-12">
                     <ScrollReveal>
-                        <p className="text-sans text-label uppercase text-muted-foreground mb-6">Resources</p>
-                        <h1 className="text-serif text-display font-bold text-foreground mb-8">
+                        <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
+                            <Scale size={16} /> Resources
+                        </p>
+                        <h1 className="text-serif text-display font-bold text-white mb-8">
                             Legal Tools
                         </h1>
-                        <p className="text-sans text-body-lg text-muted-foreground max-w-xl">
-                            Practical tools designed to help you prepare, estimate costs, and navigate your legal proceedings with confidence.
+                        <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">
+                            Practical tools designed to help you prepare, estimate costs, and navigate your legal
+                            proceedings with confidence. Access essential legal resources all in one place.
                         </p>
                     </ScrollReveal>
                 </div>
             </section>
 
-            {/* Calculator */}
+            {/* Tools Grid */}
             <section className="bg-background py-16 lg:py-28">
                 <div className="container mx-auto px-6 lg:px-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
-                        <div className="lg:col-span-7">
-                            <ScrollReveal>
-                                <h2 className="text-serif text-display-sm font-bold text-foreground mb-3">
-                                    Court Fee Calculator
-                                </h2>
-                                <p className="text-sans text-body text-muted-foreground mb-14">
-                                    Estimate court fees based on jurisdiction, case type, and claim amount.
-                                </p>
-                            </ScrollReveal>
-
-                            <div className="space-y-12">
-                                <ScrollReveal delay={0.1}>
-                                    <label className="text-sans text-label uppercase text-muted-foreground mb-5 block">Court Type</label>
-                                    <div className="flex flex-wrap gap-3">
-                                        {courtTypes.map((court, i) => (
-                                            <button
-                                                key={court.label}
-                                                onClick={() => setSelectedCourt(i)}
-                                                className={`text-sans text-body px-7 py-3.5 border transition-all duration-300 ${selectedCourt === i
-                                                    ? "bg-foreground text-background border-foreground"
-                                                    : "bg-transparent text-foreground border-border hover:border-foreground"
-                                                    }`}
-                                            >
-                                                {court.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </ScrollReveal>
-
-                                <ScrollReveal delay={0.15}>
-                                    <label className="text-sans text-label uppercase text-muted-foreground mb-5 block">Case Type</label>
-                                    <div className="flex flex-wrap gap-3">
-                                        {caseTypes.map((caseType, i) => (
-                                            <button
-                                                key={caseType.label}
-                                                onClick={() => setSelectedCase(i)}
-                                                className={`text-sans text-body px-7 py-3.5 border transition-all duration-300 ${selectedCase === i
-                                                    ? "bg-foreground text-background border-foreground"
-                                                    : "bg-transparent text-foreground border-border hover:border-foreground"
-                                                    }`}
-                                            >
-                                                {caseType.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </ScrollReveal>
-
-                                <ScrollReveal delay={0.2}>
-                                    <label className="text-sans text-label uppercase text-muted-foreground mb-5 block">Claim Amount (₹)</label>
-                                    <input
-                                        type="number"
-                                        value={claimAmount}
-                                        onChange={(e) => setClaimAmount(e.target.value)}
-                                        placeholder="Enter claim amount"
-                                        className="w-full max-w-md bg-transparent border-b-2 border-border pb-4 text-sans text-body-lg text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-foreground transition-colors"
-                                    />
-                                </ScrollReveal>
-                            </div>
-                        </div>
-
-                        {/* Result */}
-                        <div className="lg:col-span-5">
-                            <ScrollReveal delay={0.25}>
-                                <div className="bg-surface-dark p-10 lg:p-14 sticky top-32">
-                                    <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-4">Estimated Court Fee</p>
-                                    <p className="text-serif text-display font-bold text-surface-dark-foreground mb-6">
-                                        ₹{fee.toLocaleString("en-IN")}
-                                    </p>
-                                    <div className="border-t border-surface-charcoal-foreground/10 pt-6 space-y-3">
-                                        <div className="flex justify-between text-sans text-body">
-                                            <span className="text-surface-charcoal-foreground/50">Court</span>
-                                            <span className="text-surface-dark-foreground">{courtTypes[selectedCourt].label}</span>
-                                        </div>
-                                        <div className="flex justify-between text-sans text-body">
-                                            <span className="text-surface-charcoal-foreground/50">Case</span>
-                                            <span className="text-surface-dark-foreground">{caseTypes[selectedCase].label}</span>
-                                        </div>
-                                        {claimAmount && (
-                                            <div className="flex justify-between text-sans text-body">
-                                                <span className="text-surface-charcoal-foreground/50">Claim</span>
-                                                <span className="text-surface-dark-foreground">₹{parseFloat(claimAmount).toLocaleString("en-IN")}</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {tools.map((tool, index) => (
+                            <ScrollReveal key={tool.title} delay={index * 0.1}>
+                                <Link to={tool.link}>
+                                    <div className="bg-white border border-border p-10 hover:border-foreground transition-all duration-500 group h-full flex flex-col">
+                                        <div className="flex items-start justify-between mb-6">
+                                            <div className={`p-4 ${tool.color} rounded-lg`}>
+                                                <tool.icon size={28} />
                                             </div>
-                                        )}
+                                        </div>
+
+                                        <h3 className="text-sans text-[20px] font-bold text-foreground mb-4 group-hover:text-accent transition-colors">
+                                            {tool.title}
+                                        </h3>
+
+                                        <p className="text-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-grow">
+                                            {tool.description}
+                                        </p>
+
+                                        <div className="flex items-center gap-2 text-sans text-label uppercase text-foreground border-b border-foreground/30 pb-1 hover:border-foreground transition-colors inline-flex w-fit group-hover:gap-3 transition-all">
+                                            Access Tool
+                                            <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                        </div>
                                     </div>
-                                    <p className="text-sans text-sm text-surface-charcoal-foreground/30 mt-8">
-                                        Estimate only. Actual fees may vary by jurisdiction and circumstances.
-                                    </p>
-                                </div>
+                                </Link>
                             </ScrollReveal>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
+
+            {/* CTA Section */}
+            <section className="bg-surface-dark py-16 lg:py-28">
+                <div className="container mx-auto px-6 lg:px-12">
+                    <ScrollReveal>
+                        <div className="max-w-3xl mx-auto text-center">
+                            <h2 className="text-serif text-display-sm font-bold text-surface-dark-foreground mb-6">
+                                Need Legal Assistance?
+                            </h2>
+                            <p className="text-sans text-body text-surface-charcoal-foreground/60 leading-relaxed mb-10">
+                                While these tools provide valuable resources, nothing replaces professional legal advice.
+                                Contact us for personalized legal consultation.
+                            </p>
+                            <Link
+                                to="/contact"
+                                className="text-sans text-label uppercase tracking-[0.1em] bg-surface-dark-foreground text-surface-dark px-12 py-5 hover:bg-accent hover:text-background transition-all duration-500 inline-block"
+                            >
+                                Contact Us
+                            </Link>
+                        </div>
+                    </ScrollReveal>
+                </div>
+            </section>
+
             <Footer />
         </main>
     );

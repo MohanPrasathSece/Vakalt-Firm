@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { Calculator, IndianRupee, FileText, Scale } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Calculator, IndianRupee, FileText, Scale, Table as TableIcon } from 'lucide-react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollReveal from "@/components/ScrollReveal";
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +14,18 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+
+interface FeeStructure {
+    id: string;
+    case_type: string;
+    court_type: string;
+    min_claim_value: number;
+    max_claim_value: number;
+    fixed_fee: number;
+    percentage_fee: number;
+    additional_charges: string;
+    description: string;
+}
 
 // Court Fee Calculation Logic based on Himachal Pradesh Court Fees Act
 const calculateCourtFee = (amount: number): number => {
@@ -82,6 +96,27 @@ const CourtFeeCalculator = () => {
     const [caseType, setCaseType] = useState<string>("");
     const [claimAmount, setClaimAmount] = useState<string>("");
     const [calculatedFee, setCalculatedFee] = useState<number | null>(null);
+    const [feeStructures, setFeeStructures] = useState<FeeStructure[]>([]);
+    const [loadingFees, setLoadingFees] = useState(true);
+
+    useEffect(() => {
+        fetchFeeStructures();
+    }, []);
+
+    const fetchFeeStructures = async () => {
+        setLoadingFees(true);
+        const { data, error } = await supabase
+            .from('court_fee_structure')
+            .select('*')
+            .eq('is_active', true)
+            .order('court_type', { ascending: true })
+            .order('case_type', { ascending: true });
+
+        if (!error && data) {
+            setFeeStructures(data);
+        }
+        setLoadingFees(false);
+    };
 
     const handleCalculate = () => {
         const amount = parseFloat(claimAmount);
@@ -121,6 +156,17 @@ const CourtFeeCalculator = () => {
         setCalculatedFee(null);
     };
 
+    const formatCourtType = (type: string) => {
+        return type.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    };
+
+    const formatCurrency = (value: number | null) => {
+        if (value === null) return '-';
+        return `₹${value.toLocaleString('en-IN')}`;
+    };
+
     return (
         <main>
             <Navbar />
@@ -132,7 +178,7 @@ const CourtFeeCalculator = () => {
                         <p className="text-sans text-label uppercase text-surface-charcoal-foreground/50 mb-6 flex items-center gap-2">
                             <Calculator size={16} /> Legal Tools
                         </p>
-                        <h1 className="text-serif text-display font-bold text-surface-dark-foreground mb-8">
+                        <h1 className="text-serif text-display font-bold text-white mb-8">
                             Court Fee Calculator
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">
@@ -152,7 +198,7 @@ const CourtFeeCalculator = () => {
                             <div className="bg-white border border-border p-10 lg:p-14 rounded-sm">
                                 <div className="flex items-center gap-3 mb-10 pb-6 border-b border-border">
                                     <Scale size={24} className="text-foreground" />
-                                    <h2 className="text-serif text-subheading font-semibold text-foreground">
+                                    <h2 className="text-sans text-subheading font-bold text-foreground">
                                         Fee Calculation
                                     </h2>
                                 </div>
@@ -217,7 +263,7 @@ const CourtFeeCalculator = () => {
                                                 Calculated Court Fee
                                             </p>
                                             <div className="flex items-baseline gap-2">
-                                                <span className="text-serif text-display font-bold text-surface-dark-foreground">
+                                                <span className="text-sans text-display font-bold text-surface-dark-foreground">
                                                     ₹{calculatedFee.toLocaleString('en-IN')}
                                                 </span>
                                                 <span className="text-sans text-body text-surface-charcoal-foreground/60">
@@ -240,7 +286,7 @@ const CourtFeeCalculator = () => {
                             <div className="bg-surface-dark p-10 lg:p-14 sticky top-32">
                                 <div className="flex items-center gap-3 mb-8">
                                     <FileText size={20} className="text-surface-charcoal-foreground/50" />
-                                    <h3 className="text-serif text-subheading font-semibold text-surface-dark-foreground">
+                                    <h3 className="text-sans text-body font-bold text-surface-dark-foreground">
                                         Important Information
                                     </h3>
                                 </div>
@@ -292,6 +338,106 @@ const CourtFeeCalculator = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* Fee Structure Table Section */}
+            <section className="bg-surface-dark py-16 lg:py-28">
+                <div className="container mx-auto px-6 lg:px-12">
+                    <ScrollReveal>
+                        <div className="text-center mb-12">
+                            <div className="flex items-center justify-center gap-3 mb-6">
+                                <TableIcon size={24} className="text-surface-charcoal-foreground/50" />
+                                <h2 className="text-sans text-display-sm font-bold text-surface-dark-foreground">
+                                    Court Fee Structure
+                                </h2>
+                            </div>
+                            <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-2xl mx-auto">
+                                Comprehensive table of court fees for different case types across various courts
+                            </p>
+                        </div>
+                    </ScrollReveal>
+
+                    {loadingFees ? (
+                        <div className="flex justify-center py-20">
+                            <div className="w-8 h-8 border-2 border-surface-charcoal-foreground/20 border-t-surface-dark-foreground rounded-full animate-spin"></div>
+                        </div>
+                    ) : (
+                        <ScrollReveal delay={0.2}>
+                            <div className="bg-white border border-border overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead>
+                                            <tr className="bg-foreground text-background">
+                                                <th className="px-6 py-4 text-left text-sans text-label uppercase tracking-wider">
+                                                    Case Type
+                                                </th>
+                                                <th className="px-6 py-4 text-left text-sans text-label uppercase tracking-wider">
+                                                    Court Type
+                                                </th>
+                                                <th className="px-6 py-4 text-left text-sans text-label uppercase tracking-wider">
+                                                    Claim Value Range
+                                                </th>
+                                                <th className="px-6 py-4 text-left text-sans text-label uppercase tracking-wider">
+                                                    Fixed Fee
+                                                </th>
+                                                <th className="px-6 py-4 text-left text-sans text-label uppercase tracking-wider">
+                                                    Percentage Fee
+                                                </th>
+                                                <th className="px-6 py-4 text-left text-sans text-label uppercase tracking-wider">
+                                                    Description
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-border">
+                                            {feeStructures.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
+                                                        No fee structure data available
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                feeStructures.map((fee) => (
+                                                    <tr key={fee.id} className="hover:bg-surface-dark/5 transition-colors">
+                                                        <td className="px-6 py-4 text-sans font-semibold text-foreground">
+                                                            {fee.case_type}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sans text-muted-foreground">
+                                                            <span className="inline-block px-3 py-1 bg-accent/10 text-accent text-xs uppercase rounded">
+                                                                {formatCourtType(fee.court_type)}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sans text-muted-foreground">
+                                                            {fee.min_claim_value !== null && fee.max_claim_value !== null
+                                                                ? `${formatCurrency(fee.min_claim_value)} - ${formatCurrency(fee.max_claim_value)}`
+                                                                : '-'}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sans font-semibold text-foreground">
+                                                            {formatCurrency(fee.fixed_fee)}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sans text-muted-foreground">
+                                                            {fee.percentage_fee ? `${fee.percentage_fee}%` : '-'}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sans text-sm text-muted-foreground max-w-xs">
+                                                            {fee.description}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div className="mt-8 text-center">
+                                <p className="text-sans text-xs text-surface-charcoal-foreground/40 leading-relaxed max-w-3xl mx-auto">
+                                    * The above fee structure is for reference purposes only. Actual court fees may vary based on specific
+                                    circumstances, amendments to the Court Fees Act, and judicial discretion. Always verify with the
+                                    respective court registry before filing.
+                                </p>
+                            </div>
+                        </ScrollReveal>
+                    )}
                 </div>
             </section>
 
