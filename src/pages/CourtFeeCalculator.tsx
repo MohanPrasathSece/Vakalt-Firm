@@ -77,17 +77,48 @@ const formatToWords = (num: number): string => {
     const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 
     const convert = (n: number): string => {
-        const numStr = n.toString();
-        if (numStr.length > 9) return 'overflow';
-        const matches = ('000000000' + numStr).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-        if (!matches) return '';
-        let str = '';
-        str += (Number(matches[1]) != 0) ? (a[Number(matches[1])] || b[parseInt(matches[1][0])] + ' ' + a[parseInt(matches[1][1])]) + 'crore ' : '';
-        str += (Number(matches[2]) != 0) ? (a[Number(matches[2])] || b[parseInt(matches[2][0])] + ' ' + a[parseInt(matches[2][1])]) + 'lakh ' : '';
-        str += (Number(matches[3]) != 0) ? (a[Number(matches[3])] || b[parseInt(matches[3][0])] + ' ' + a[parseInt(matches[3][1])]) + 'thousand ' : '';
-        str += (Number(matches[4]) != 0) ? (a[Number(matches[4])] || b[parseInt(matches[4][0])] + ' ' + a[parseInt(matches[4][1])]) + 'hundred ' : '';
-        str += (Number(matches[5]) != 0) ? ((str != '') ? 'and ' : '') + (a[Number(matches[5])] || b[parseInt(matches[5][0])] + ' ' + a[parseInt(matches[5][1])]) : '';
-        return str.trim();
+        if (n === 0) return 'zero ';
+        const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+        const b = ['', '', 'twenty ', 'thirty ', 'forty ', 'fifty ', 'sixty ', 'seventy ', 'eighty ', 'ninety '];
+
+        const convertLessThanThousand = (num: number): string => {
+            let res = '';
+            if (num >= 100) {
+                res += a[Math.floor(num / 100)] + 'hundred ';
+                num %= 100;
+            }
+            if (num > 0) {
+                if (res !== '') res += 'and ';
+                if (num < 20) {
+                    res += a[num];
+                } else {
+                    res += b[Math.floor(num / 10)];
+                    if (num % 10 > 0) res += a[num % 10];
+                }
+            }
+            return res;
+        };
+
+        let res = '';
+        let remaining = n;
+
+        if (remaining >= 10000000) { // Crores
+            res += convert(Math.floor(remaining / 10000000)) + 'crore ';
+            remaining %= 10000000;
+        }
+        if (remaining >= 100000) { // Lakhs
+            res += convertLessThanThousand(Math.floor(remaining / 100000)) + 'lakh ';
+            remaining %= 100000;
+        }
+        if (remaining >= 1000) { // Thousands
+            res += convertLessThanThousand(Math.floor(remaining / 1000)) + 'thousand ';
+            remaining %= 1000;
+        }
+        if (remaining > 0) {
+            res += convertLessThanThousand(remaining);
+        }
+
+        return res;
     };
 
     let result = convert(wholePart) + ' Rupees';
@@ -267,7 +298,7 @@ const CourtFeeCalculator = () => {
                                                             key={calculatedFee}
                                                             initial={{ scale: 0.9, opacity: 0 }}
                                                             animate={{ scale: 1, opacity: 1 }}
-                                                            className="text-sans text-display font-bold text-surface-dark-foreground bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
+                                                            className="text-sans text-subheading md:text-heading font-bold text-surface-dark-foreground bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70 whitespace-nowrap"
                                                         >
                                                             ₹{calculatedFee.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                                                         </motion.span>
