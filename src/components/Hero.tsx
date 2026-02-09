@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 interface HeroProps {
@@ -61,29 +62,30 @@ const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-t border-surface-charcoal-foreground/15 pt-8"
         >
-          <div className="max-w-md">
-            <p className="text-sans text-lg font-medium text-surface-dark-foreground mb-4">
+          <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-md lg:text-left">
+            Modern legal insight and representation built for individuals and businesses navigating complex legal environments.
+          </p>
+
+          <div className="max-w-md lg:text-right">
+            <p className="text-serif text-2xl italic text-surface-charcoal-foreground/80 mb-6">
               Are you?
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 justify-start lg:justify-end">
               <button
                 onClick={onScrollToTools}
-                className="text-sans text-[12px] font-bold uppercase tracking-[0.11em] bg-surface-dark-foreground text-surface-dark px-8 py-4 rounded-full hover:bg-zinc-200 transition-all duration-500"
+                className="group relative inline-flex items-center gap-2 bg-surface-dark-foreground text-surface-dark px-8 py-4 rounded-full font-bold uppercase tracking-wider text-xs hover:bg-zinc-200 transition-all duration-300"
               >
-                A Lawyer
+                <span>A Lawyer</span>
+                <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
               <button
                 onClick={onScrollToCitizen}
-                className="text-sans text-[12px] font-bold uppercase tracking-[0.11em] border border-surface-charcoal-foreground/30 text-surface-dark-foreground px-8 py-4 rounded-full hover:border-surface-dark-foreground hover:bg-surface-charcoal-foreground/5 transition-all duration-500"
+                className="group inline-flex items-center gap-2 border border-surface-charcoal-foreground/30 text-surface-dark-foreground px-8 py-4 rounded-full font-bold uppercase tracking-wider text-xs hover:bg-surface-charcoal-foreground/5 hover:border-surface-dark-foreground transition-all duration-300"
               >
-                Not a Lawyer
+                <span>Not a Lawyer</span>
               </button>
             </div>
           </div>
-
-          <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-md lg:text-right">
-            Modern legal insight and representation built for individuals and businesses navigating complex legal environments.
-          </p>
         </motion.div>
       </div>
     </section>
