@@ -10,7 +10,7 @@ interface HeroProps {
 
 const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
   return (
-    <section className="relative min-h-screen flex flex-col justify-end bg-surface-dark overflow-hidden pb-16 lg:pb-24">
+    <section className="relative min-h-screen flex flex-col justify-end bg-surface-dark overflow-hidden pb-32 lg:pb-48">
       {/* Background */}
       <div className="absolute inset-0">
         <img src={heroBg} alt="" className="w-full h-full object-cover opacity-20" loading="eager" />
@@ -22,7 +22,7 @@ const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="relative container mx-auto px-6 lg:px-12 pt-40 lg:pt-48 mb-auto"
+        className="relative container mx-auto px-6 lg:px-12 pt-32 lg:pt-40 mb-auto"
       >
         <div className="flex items-center gap-4">
           <div className="w-12 h-px bg-surface-charcoal-foreground/40" />
@@ -67,7 +67,7 @@ const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
           </p>
 
           <div className="max-w-md lg:text-right">
-            <p className="text-serif text-2xl italic text-surface-charcoal-foreground/80 mb-6">
+            <p className="text-serif text-5xl lg:text-6xl italic text-surface-charcoal-foreground/90 mb-8 tracking-tight">
               Are you?
             </p>
             <div className="flex flex-wrap gap-4 justify-start lg:justify-end">

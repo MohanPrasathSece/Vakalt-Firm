@@ -173,39 +173,43 @@ const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
                   {searchQuery && (
                     <div className="p-2 bg-muted/30 max-h-[300px] overflow-y-auto">
                       <div className="space-y-1">
-                        {[
-                          { label: "Criminal Defence Services", href: "/insights", desc: "Expert defence for criminal cases" },
-                          { label: "Schedule Consultation", href: "/contact", desc: "Book an appointment with us" },
-                          { label: "Corporate Law", href: "/tools", desc: "Business and corporate legal tools" },
-                          { label: "Property Disputes", href: "/insights", desc: "Real estate litigation support" },
-                          { label: "Family Law", href: "/insights", desc: "Divorce and custody matters" }
-                        ].filter(i =>
-                          i.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          i.desc.toLowerCase().includes(searchQuery.toLowerCase())
-                        ).length > 0 ? (
-                          [
-                            { label: "Criminal Defence Services", href: "/insights", desc: "Expert defence for criminal cases" },
-                            { label: "Schedule Consultation", href: "/contact", desc: "Book an appointment with us" },
-                            { label: "Corporate Law", href: "/tools", desc: "Business and corporate legal tools" },
-                            { label: "Property Disputes", href: "/insights", desc: "Real estate litigation support" },
-                            { label: "Family Law", href: "/insights", desc: "Divorce and custody matters" }
-                          ].filter(i =>
+                        {(() => {
+                          const searchItems = [
+                            { label: "Home", href: "/", desc: "Return to homepage" },
+                            { label: "Legal Insights", href: "/insights", desc: "Read our latest legal articles and updates" },
+                            { label: "Legal Tools", href: "/tools", desc: "Access various legal utilities and resources" },
+                            { label: "Court Fee Calculator", href: "/tools/court-fee-calculator", desc: "Calculate court fees for your case" },
+                            { label: "Legal Drafts", href: "/tools/legal-drafts", desc: "Download common legal draft templates" },
+                            { label: "Court VC Links", href: "/tools/court-vc-links", desc: "Direct video conferencing links for courts" },
+                            { label: "Police Stations", href: "/tools/police-stations", desc: "Find police station information" },
+                            { label: "Careers", href: "/careers", desc: "Explore legal job opportunities and internships" },
+                            { label: "Submit a Job", href: "/careers/submit", desc: "Post a new legal job or internship" },
+                            { label: "Contact Us", href: "/contact", desc: "Get in touch with our legal experts" },
+                            { label: "Citizen Services", href: "/#citizen-services", desc: "Legal services for individuals" },
+                            { label: "Consultation", href: "/contact", desc: "Book an appointment with us" },
+                          ];
+
+                          const filteredItems = searchItems.filter(i =>
                             i.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             i.desc.toLowerCase().includes(searchQuery.toLowerCase())
-                          ).map((item) => (
-                            <Link
-                              key={item.label}
-                              to={item.href}
-                              onClick={() => { setShowSearch(false); handleLinkClick(item.href); }}
-                              className="block px-3 py-3 rounded-md hover:bg-background transition-colors group"
-                            >
-                              <p className="text-sm font-medium text-foreground group-hover:text-primary">{item.label}</p>
-                              <p className="text-xs text-muted-foreground">{item.desc}</p>
-                            </Link>
-                          ))
-                        ) : (
-                          <p className="text-sm text-muted-foreground p-3 text-center">No matching results.</p>
-                        )}
+                          );
+
+                          return filteredItems.length > 0 ? (
+                            filteredItems.map((item) => (
+                              <Link
+                                key={item.label}
+                                to={item.href}
+                                onClick={() => { setShowSearch(false); handleLinkClick(item.href); }}
+                                className="block px-3 py-3 rounded-md hover:bg-background transition-colors group"
+                              >
+                                <p className="text-sm font-medium text-foreground group-hover:text-primary">{item.label}</p>
+                                <p className="text-xs text-muted-foreground">{item.desc}</p>
+                              </Link>
+                            ))
+                          ) : (
+                            <p className="text-sm text-muted-foreground p-3 text-center">No matching results.</p>
+                          );
+                        })()}
                       </div>
                     </div>
                   )}
