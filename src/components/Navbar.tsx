@@ -6,11 +6,9 @@ import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 
 const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Insights", href: "/insights" },
-  { label: "Tools", href: "/tools" },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/contact" },
+  { label: "Legal Tools", href: "/tools" },
+  { label: "Legal Jobs/Internships", href: "/careers" },
+  { label: "Citizen Services", href: "/#citizen-services" },
 ];
 
 const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
@@ -29,8 +27,21 @@ const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
   }, []);
 
   const handleLinkClick = (href: string) => {
-    if (location.pathname === href) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    const targetPath = href.split("#")[0] || "/";
+    const isHashLink = href.includes("#");
+
+    if (location.pathname === targetPath) {
+      if (isHashLink) {
+        const id = href.split("#")[1];
+        const element = document.getElementById(id);
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     } else {
       window.scrollTo(0, 0);
     }

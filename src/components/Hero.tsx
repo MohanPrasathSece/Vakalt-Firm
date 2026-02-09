@@ -2,7 +2,12 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
-const Hero = () => {
+interface HeroProps {
+  onScrollToTools?: () => void;
+  onScrollToCitizen?: () => void;
+}
+
+const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
   return (
     <section className="relative min-h-screen flex flex-col justify-end bg-surface-dark overflow-hidden pb-16 lg:pb-24">
       {/* Background */}
@@ -38,7 +43,7 @@ const Hero = () => {
             Litigation.
           </motion.h1>
         </div>
-        <div className="overflow-hidden mb-12 pb-8">
+        <div className="overflow-hidden mb-8 pb-8">
           <motion.h1
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -56,23 +61,29 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-t border-surface-charcoal-foreground/15 pt-8"
         >
-          <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-md">
+          <div className="max-w-md">
+            <p className="text-sans text-lg font-medium text-surface-dark-foreground mb-4">
+              Are you?
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={onScrollToTools}
+                className="text-sans text-[12px] font-bold uppercase tracking-[0.11em] bg-surface-dark-foreground text-surface-dark px-8 py-4 rounded-full hover:bg-zinc-200 transition-all duration-500"
+              >
+                A Lawyer
+              </button>
+              <button
+                onClick={onScrollToCitizen}
+                className="text-sans text-[12px] font-bold uppercase tracking-[0.11em] border border-surface-charcoal-foreground/30 text-surface-dark-foreground px-8 py-4 rounded-full hover:border-surface-dark-foreground hover:bg-surface-charcoal-foreground/5 transition-all duration-500"
+              >
+                Not a Lawyer
+              </button>
+            </div>
+          </div>
+
+          <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-md lg:text-right">
             Modern legal insight and representation built for individuals and businesses navigating complex legal environments.
           </p>
-          <div className="flex flex-wrap gap-4">
-            <Link
-              to="/contact"
-              className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] bg-surface-dark-foreground text-surface-dark px-6 py-3 rounded-full hover:bg-zinc-200 transition-all duration-500"
-            >
-              Ask a Legal Question
-            </Link>
-            <Link
-              to="/insights"
-              className="text-sans text-[10px] font-bold uppercase tracking-[0.11em] border border-surface-charcoal-foreground/30 text-surface-dark-foreground px-6 py-3 rounded-full hover:border-surface-dark-foreground transition-all duration-500"
-            >
-              Explore Insights
-            </Link>
-          </div>
         </motion.div>
       </div>
     </section>
