@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { ScrollToTop } from "./components/ScrollToTop";
 import ScrollToTopHandler from "./components/ScrollToTopHandler";
@@ -46,43 +47,45 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/insights" element={<Insights />} />
-            <Route path="/insights/:slug" element={<PostDetail />} />
-            <Route path="/tools" element={<Tools />} />
-            <Route path="/tools/court-fee-calculator" element={<CourtFeeCalculator />} />
-            <Route path="/tools/legal-drafts" element={<LegalDrafts />} />
-            <Route path="/tools/court-vc-links" element={<CourtVCLinks />} />
-            <Route path="/tools/police-stations" element={<PoliceStations />} />
-            <Route path="/careers" element={<CareersPage />} />
-            <Route path="/careers/submit" element={<SubmitJob />} />
-            <Route path="/contact" element={<Contact />} />
+    <HelmetProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/insights" element={<Insights />} />
+              <Route path="/insights/:slug" element={<PostDetail />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/tools/court-fee-calculator" element={<CourtFeeCalculator />} />
+              <Route path="/tools/legal-drafts" element={<LegalDrafts />} />
+              <Route path="/tools/court-vc-links" element={<CourtVCLinks />} />
+              <Route path="/tools/police-stations" element={<PoliceStations />} />
+              <Route path="/careers" element={<CareersPage />} />
+              <Route path="/careers/submit" element={<SubmitJob />} />
+              <Route path="/contact" element={<Contact />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/posts" element={<AdminPosts />} />
-            <Route path="/admin/posts/new" element={<AdminEditPost />} />
-            <Route path="/admin/posts/:id" element={<AdminEditPost />} />
-            <Route path="/admin/categories" element={<AdminCategories />} />
-            <Route path="/admin/careers" element={<AdminCareers />} />
-            <Route path="/admin/careers/new" element={<AdminEditCareer />} />
-            <Route path="/admin/careers/:id" element={<AdminEditCareer />} />
-            <Route path="/admin/applications" element={<AdminApplications />} />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/posts" element={<AdminPosts />} />
+              <Route path="/admin/posts/new" element={<AdminEditPost />} />
+              <Route path="/admin/posts/:id" element={<AdminEditPost />} />
+              <Route path="/admin/categories" element={<AdminCategories />} />
+              <Route path="/admin/careers" element={<AdminCareers />} />
+              <Route path="/admin/careers/new" element={<AdminEditCareer />} />
+              <Route path="/admin/careers/:id" element={<AdminEditCareer />} />
+              <Route path="/admin/applications" element={<AdminApplications />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-        <ScrollToTopHandler />
-        <ScrollToTop />
-      </BrowserRouter>
-    </TooltipProvider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+          <ScrollToTopHandler />
+          <ScrollToTop />
+        </BrowserRouter>
+      </TooltipProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 

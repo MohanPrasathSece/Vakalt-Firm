@@ -35,7 +35,7 @@ const Stats = () => {
   return (
     <section className="bg-surface-offwhite py-20 lg:py-28">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x lg:divide-border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x lg:divide-border">
           {stats.map((stat, i) => (
             <ScrollReveal key={stat.label} delay={i * 0.1} className="lg:px-12 first:lg:pl-0 last:lg:pr-0">
               <div className="text-center lg:text-left">

@@ -213,10 +213,10 @@ const Posts = () => {
                         <table className="w-full text-sm text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50/50 border-b border-gray-100">
-                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest">Publication Details</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest">Classification</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest text-center">Visibility</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest">Date</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest min-w-[200px]">Publication Details</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest min-w-[150px]">Classification</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest text-center min-w-[100px]">Visibility</th>
+                                    <th className="px-6 py-4 font-bold text-gray-500 uppercase text-[10px] tracking-widest min-w-[120px]">Date</th>
                                     <th className="px-6 py-4"></th>
                                 </tr>
                             </thead>

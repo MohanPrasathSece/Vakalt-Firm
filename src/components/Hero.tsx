@@ -33,7 +33,7 @@ const Hero = () => {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-serif text-7xl lg:text-9xl font-bold text-surface-dark-foreground leading-[1.1]"
+            className="text-serif text-5xl md:text-7xl lg:text-9xl font-bold text-surface-dark-foreground leading-[1.1]"
           >
             Litigation.
           </motion.h1>
@@ -43,7 +43,7 @@ const Hero = () => {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-serif text-7xl lg:text-9xl font-bold text-surface-dark-foreground"
+            className="text-serif text-5xl md:text-7xl lg:text-9xl font-bold text-surface-dark-foreground"
           >
             Simplified.
           </motion.h1>

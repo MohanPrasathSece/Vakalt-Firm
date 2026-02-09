@@ -28,57 +28,70 @@ interface FeeStructure {
     description: string;
 }
 
-// Court Fee Calculation Logic based on Himachal Pradesh Court Fees Act
+// Court Fee Calculation Logic based on Delhi (Ad Valorem) Formula
 const calculateCourtFee = (V: number): number => {
     if (V <= 0) return 0;
-    if (V <= 5) return 1;
 
-    if (V <= 100)
-        return 1 + Math.ceil((V - 5) / 5);
+    let CF = 0;
 
-    if (V <= 500)
-        return 20 + Math.ceil((V - 100) / 10);
+    if (V <= 5) {
+        CF = 0.50;
+    } else if (V <= 100) {
+        CF = 0.50 + 0.50 * Math.ceil((V - 5) / 5);
+    } else if (V <= 500) {
+        CF = 10 + 1 * Math.ceil((V - 100) / 10);
+    } else if (V <= 1000) {
+        CF = 50 + 1.50 * Math.ceil((V - 500) / 10);
+        // Note: The user's prompt says 150 for first 1000 in next step, 
+        // but the formula 50 + 1.5 * 50 = 125. 
+        // We will respect the base value of 150 for the next slab.
+    } else if (V <= 5000) {
+        CF = 150 + 12.20 * Math.ceil((V - 1000) / 100);
+    } else if (V <= 10000) {
+        CF = 638 + 24.40 * Math.ceil((V - 5000) / 250);
+    } else if (V <= 20000) {
+        CF = 1126 + 36.60 * Math.ceil((V - 10000) / 500);
+    } else if (V <= 400000) {
+        // CF at 20,000 is 1858
+        CF = 1858 + 48.80 * Math.ceil((V - 20000) / 5000);
+    } else {
+        // CF at 400,000
+        // 1858 + 48.80 * ((400000-20000)/5000) = 1858 + 48.80 * 76 = 1858 + 3708.8 = 5566.8
+        const cfAt400000 = 5566.8;
+        CF = cfAt400000 + 48.80 * Math.ceil((V - 400000) / 5000);
+    }
 
-    if (V <= 1000)
-        return 60 + Math.ceil((V - 500) / 10) * 2;
-
-    if (V <= 5000)
-        return 160 + Math.ceil((V - 1000) / 100) * 15;
-
-    if (V <= 10000)
-        return 760 + Math.ceil((V - 5000) / 250) * 25;
-
-    if (V <= 20000)
-        return 1260 + Math.ceil((V - 10000) / 500) * 40;
-
-    if (V <= 30000)
-        return 2060 + Math.ceil((V - 20000) / 1000) * 50;
-
-    if (V <= 50000)
-        return 2560 + Math.ceil((V - 30000) / 2000) * 50;
-
-    if (V <= 400000)
-        return 3060 + Math.ceil((V - 50000) / 5000) * 50;
-
-    return 6560 + Math.ceil((V - 400000) / 5000) * 50;
+    // Usually court fees are rounded to two decimal places
+    return Math.round(CF * 100) / 100;
 };
 
 // Helper to format numbers to words (Simple version for Indian context)
 const formatToWords = (num: number): string => {
+    const wholePart = Math.floor(num);
+    const paisePart = Math.round((num - wholePart) * 100);
+
     const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
     const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 
-    const numStr = num.toString();
-    if (numStr.length > 9) return 'overflow';
-    const n = ('000000000' + numStr).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-    if (!n) return '';
-    let str = '';
-    str += (Number(n[1]) != 0) ? (a[Number(n[1])] || b[parseInt(n[1][0])] + ' ' + a[parseInt(n[1][1])]) + 'crore ' : '';
-    str += (Number(n[2]) != 0) ? (a[Number(n[2])] || b[parseInt(n[2][0])] + ' ' + a[parseInt(n[2][1])]) + 'lakh ' : '';
-    str += (Number(n[3]) != 0) ? (a[Number(n[3])] || b[parseInt(n[3][0])] + ' ' + a[parseInt(n[3][1])]) + 'thousand ' : '';
-    str += (Number(n[4]) != 0) ? (a[Number(n[4])] || b[parseInt(n[4][0])] + ' ' + a[parseInt(n[4][1])]) + 'hundred ' : '';
-    str += (Number(n[5]) != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[parseInt(n[5][0])] + ' ' + a[parseInt(n[5][1])]) : '';
-    return str.trim();
+    const convert = (n: number): string => {
+        const numStr = n.toString();
+        if (numStr.length > 9) return 'overflow';
+        const matches = ('000000000' + numStr).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+        if (!matches) return '';
+        let str = '';
+        str += (Number(matches[1]) != 0) ? (a[Number(matches[1])] || b[parseInt(matches[1][0])] + ' ' + a[parseInt(matches[1][1])]) + 'crore ' : '';
+        str += (Number(matches[2]) != 0) ? (a[Number(matches[2])] || b[parseInt(matches[2][0])] + ' ' + a[parseInt(matches[2][1])]) + 'lakh ' : '';
+        str += (Number(matches[3]) != 0) ? (a[Number(matches[3])] || b[parseInt(matches[3][0])] + ' ' + a[parseInt(matches[3][1])]) + 'thousand ' : '';
+        str += (Number(matches[4]) != 0) ? (a[Number(matches[4])] || b[parseInt(matches[4][0])] + ' ' + a[parseInt(matches[4][1])]) + 'hundred ' : '';
+        str += (Number(matches[5]) != 0) ? ((str != '') ? 'and ' : '') + (a[Number(matches[5])] || b[parseInt(matches[5][0])] + ' ' + a[parseInt(matches[5][1])]) : '';
+        return str.trim();
+    };
+
+    let result = convert(wholePart) + ' Rupees';
+    if (paisePart > 0) {
+        result += ' and ' + convert(paisePart) + ' Paise';
+    }
+    return result;
 };
 
 import { useQuery } from '@tanstack/react-query';
@@ -116,10 +129,10 @@ const CourtFeeCalculator = () => {
                 fee = calculateCourtFee(amount);
                 break;
             case "possession":
-                fee = Math.ceil(calculateCourtFee(amount) / 2);
+                fee = calculateCourtFee(amount) / 2;
                 break;
             case "review_before_90":
-                fee = Math.ceil(calculateCourtFee(amount) / 2);
+                fee = calculateCourtFee(amount) / 2;
                 break;
             case "review_after_90":
                 fee = calculateCourtFee(amount);
@@ -131,7 +144,7 @@ const CourtFeeCalculator = () => {
                 fee = 0;
         }
 
-        setCalculatedFee(fee);
+        setCalculatedFee(Math.round(fee * 100) / 100);
     };
 
     const handleReset = () => {
@@ -148,7 +161,7 @@ const CourtFeeCalculator = () => {
 
     const formatCurrency = (value: number | null) => {
         if (value === null) return '-';
-        return `₹${value.toLocaleString('en-IN')}`;
+        return `₹${value.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
     };
 
     return (
@@ -163,10 +176,10 @@ const CourtFeeCalculator = () => {
                             <Calculator size={16} /> Legal Tools
                         </p>
                         <h1 className="text-serif text-display-sm font-bold text-white mb-8 select-none">
-                            Court Fee Calculator
+                            Delhi Court Fee Calculator
                         </h1>
                         <p className="text-sans text-body-lg text-surface-charcoal-foreground/60 max-w-2xl">
-                            Calculate court fees for civil suits based on the latest ad valorem fee schedule.
+                            Calculate court fees for civil suits in Delhi based on the latest Ad Valorem fee schedule.
                             Enter your claim amount and case type to get an instant fee calculation.
                         </p>
                     </div>
@@ -183,7 +196,7 @@ const CourtFeeCalculator = () => {
                                 <div className="flex items-center gap-3 mb-10 pb-6 border-b border-border">
                                     <Scale size={24} className="text-foreground" />
                                     <h2 className="text-sans text-subheading font-bold text-foreground">
-                                        Fee Calculation
+                                        Fee Calculation (Delhi)
                                     </h2>
                                 </div>
 
@@ -208,7 +221,7 @@ const CourtFeeCalculator = () => {
 
                                     <div>
                                         <Label className="text-sans text-label uppercase text-muted-foreground mb-4 block">
-                                            Claim Amount (₹)
+                                            Value of Subject Matter (₹)
                                         </Label>
                                         <div className="relative">
                                             <IndianRupee className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -216,7 +229,7 @@ const CourtFeeCalculator = () => {
                                                 type="number"
                                                 value={claimAmount}
                                                 onChange={(e) => setClaimAmount(e.target.value)}
-                                                placeholder="Enter claim amount"
+                                                placeholder="Enter value"
                                                 className="w-full bg-transparent border-b-2 border-border pb-4 pl-8 text-sans text-body-lg text-foreground focus:outline-none focus:border-foreground transition-colors border-t-0 border-x-0 rounded-none"
                                             />
                                         </div>
@@ -264,14 +277,14 @@ const CourtFeeCalculator = () => {
                                                             animate={{ scale: 1, opacity: 1 }}
                                                             className="text-sans text-display font-bold text-surface-dark-foreground bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70"
                                                         >
-                                                            ₹{calculatedFee.toLocaleString('en-IN')}
+                                                            ₹{calculatedFee.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                                                         </motion.span>
                                                         <span className="text-sans text-body text-surface-charcoal-foreground/60 italic">
-                                                            (Rupees {formatToWords(calculatedFee)} only)
+                                                            ({formatToWords(calculatedFee)} only)
                                                         </span>
                                                     </div>
                                                     <p className="text-sans text-sm text-surface-charcoal-foreground/50 mt-8 leading-relaxed border-l-2 border-surface-charcoal-foreground/20 pl-4">
-                                                        * This estimate is based on the standard ad valorem fee schedule.
+                                                        * This estimate is based on the Delhi Court Fees (Ad Valorem) schedule.
                                                         The final fee is subject to verification by the court registry.
                                                     </p>
                                                 </div>
@@ -288,53 +301,52 @@ const CourtFeeCalculator = () => {
                                 <div className="flex items-center gap-3 mb-8">
                                     <FileText size={20} className="text-surface-charcoal-foreground/50" />
                                     <h3 className="text-sans text-body font-bold text-surface-dark-foreground">
-                                        Important Information
+                                        Delhi Court Fee Rules
                                     </h3>
                                 </div>
 
                                 <div className="space-y-8">
                                     <div>
                                         <h4 className="text-sans text-body font-semibold text-surface-dark-foreground mb-3">
-                                            About Court Fees
+                                            Ad Valorem Calculation
                                         </h4>
                                         <p className="text-sans text-sm text-surface-charcoal-foreground/60 leading-relaxed">
-                                            Court fees are calculated based on the value of the subject matter in dispute.
-                                            The fee structure is progressive, meaning higher claim amounts attract proportionally
-                                            higher fees.
+                                            In Delhi, court fees for civil suits are calculated based on the value of the subject matter
+                                            using a slab-based incremental system.
                                         </p>
                                     </div>
 
                                     <div>
                                         <h4 className="text-sans text-body font-semibold text-surface-dark-foreground mb-3">
-                                            Fee Schedule
+                                            Fee Slabs (Quick View)
                                         </h4>
                                         <ul className="text-sans text-sm text-surface-charcoal-foreground/60 leading-relaxed space-y-2">
-                                            <li>• Up to ₹100: ₹1 per ₹5</li>
+                                            <li>• Up to ₹5: ₹0.50</li>
+                                            <li>• ₹5 - ₹100: ₹0.50 per ₹5</li>
                                             <li>• ₹100 - ₹500: ₹1 per ₹10</li>
-                                            <li>• ₹500 - ₹1,000: ₹2 per ₹10</li>
-                                            <li>• ₹1,000 - ₹5,000: ₹15 per ₹100</li>
-                                            <li>• ₹5,000 - ₹10,000: ₹25 per ₹250</li>
-                                            <li>• ₹10,000 - ₹20,000: ₹40 per ₹500</li>
-                                            <li>• Above ₹20,000: Progressive rates apply</li>
+                                            <li>• ₹500 - ₹1,000: ₹1.50 per ₹10</li>
+                                            <li>• ₹1,000 - ₹5,000: ₹12.20 per ₹100</li>
+                                            <li>• ₹5,000 - ₹10,000: ₹24.40 per ₹250</li>
+                                            <li>• ₹10,000 - ₹20,000: ₹36.60 per ₹500</li>
+                                            <li>• Above ₹20,000: Incremental slabs apply</li>
+                                            <li>• Above ₹4,00,000: ₹48.80 per ₹5,000</li>
                                         </ul>
                                     </div>
 
                                     <div>
                                         <h4 className="text-sans text-body font-semibold text-surface-dark-foreground mb-3">
-                                            Special Cases
+                                            Lawyer's Quick Rule
                                         </h4>
                                         <p className="text-sans text-sm text-surface-charcoal-foreground/60 leading-relaxed">
-                                            Suits for possession under the Specific Relief Act attract half the normal fee.
-                                            Review petitions filed before 90 days also attract half the fee, while those
-                                            filed after 90 days attract the full fee.
+                                            For claims exceeding ₹4,00,000, the fee increases at a flat rate of ₹48.80 for
+                                            every ₹5,000 or part thereof in excess of the base.
                                         </p>
                                     </div>
 
                                     <div className="border-t border-surface-charcoal-foreground/10 pt-8">
                                         <p className="text-sans text-xs text-surface-charcoal-foreground/40 leading-relaxed">
-                                            This calculator is based on the latest Court Fees Act schedule and provides
-                                            estimates for informational purposes only. For official fee determination,
-                                            please consult the court registry or a legal professional.
+                                            This calculator uses the standard Delhi Ad Valorem formula. Always verify with
+                                            current amendments and the local court registry for final fee determination.
                                         </p>
                                     </div>
                                 </div>
@@ -352,11 +364,11 @@ const CourtFeeCalculator = () => {
                             <div className="flex items-center justify-center gap-3 mb-6">
                                 <TableIcon size={24} className="text-surface-charcoal-foreground/50" />
                                 <h2 className="text-sans text-display-sm font-bold text-surface-dark-foreground">
-                                    Court Fee Structure
+                                    General Court Fee Structure
                                 </h2>
                             </div>
                             <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-2xl mx-auto">
-                                Comprehensive table of court fees for different case types across various courts
+                                Reference table for various court fee types across jurisdictions
                             </p>
                         </div>
                     </ScrollReveal>
@@ -396,7 +408,7 @@ const CourtFeeCalculator = () => {
                                             {feeStructures.length === 0 ? (
                                                 <tr>
                                                     <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
-                                                        No fee structure data available
+                                                        No additional fee structure data available
                                                     </td>
                                                 </tr>
                                             ) : (
@@ -434,9 +446,7 @@ const CourtFeeCalculator = () => {
 
                             <div className="mt-8 text-center">
                                 <p className="text-sans text-xs text-surface-charcoal-foreground/40 leading-relaxed max-w-3xl mx-auto">
-                                    * The above fee structure is for reference purposes only. Actual court fees may vary based on specific
-                                    circumstances, amendments to the Court Fees Act, and judicial discretion. Always verify with the
-                                    respective court registry before filing.
+                                    * The above table is for general reference. For Delhi specific civil suits, use the Ad Valorem calculator above.
                                 </p>
                             </div>
                         </ScrollReveal>

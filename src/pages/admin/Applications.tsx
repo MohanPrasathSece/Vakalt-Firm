@@ -95,14 +95,14 @@ const Applications = () => {
                     <p className="text-gray-500 mt-1">Review and manage applications for job and internship postings.</p>
                 </div>
 
-                <div className="flex gap-2 p-1 bg-gray-100 rounded-xl w-fit">
+                <div className="flex gap-2 p-1 bg-gray-100 rounded-xl w-full overflow-x-auto hide-scrollbar shrink-0">
                     {['all', 'pending', 'reviewed', 'shortlisted', 'hired', 'rejected'].map((status) => (
                         <button
                             key={status}
                             onClick={() => setFilterStatus(status)}
-                            className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${filterStatus === status
-                                    ? "bg-white text-black shadow-sm"
-                                    : "text-gray-500 hover:text-black"
+                            className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all whitespace-nowrap ${filterStatus === status
+                                ? "bg-white text-black shadow-sm"
+                                : "text-gray-500 hover:text-black"
                                 }`}
                         >
                             {status}

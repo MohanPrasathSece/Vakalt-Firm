@@ -6,8 +6,8 @@ import { Calculator, FileText, Video, Building, Scale, ChevronRight } from "luci
 
 const tools = [
     {
-        title: "Court Fee Calculator",
-        description: "Calculate court fees for civil suits based on the Himachal Pradesh Court Fees Act. Get instant fee calculations with comprehensive fee structure tables.",
+        title: "Delhi Court Fee Calculator",
+        description: "Calculate court fees for civil suits in Delhi based on the latest Ad Valorem fee schedule. Get instant calculations with precise slab-based estimates.",
         icon: Calculator,
         link: "/tools/court-fee-calculator",
         color: "bg-zinc-50 text-foreground border border-border"

@@ -254,12 +254,12 @@ const EditPost = () => {
                             <p className="text-sm text-gray-500 font-medium">Drafting authoritative legal intelligence.</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Button variant="ghost" className="font-bold text-gray-400 hover:text-black uppercase text-[10px] tracking-widest px-6" onClick={() => navigate('/admin/posts')}>Discard</Button>
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <Button variant="ghost" className="flex-1 md:flex-none font-bold text-gray-400 hover:text-black uppercase text-[10px] tracking-widest px-6" onClick={() => navigate('/admin/posts')}>Discard</Button>
                         <Button
                             onClick={handleSave}
                             disabled={saving}
-                            className="bg-black text-white hover:bg-gray-800 rounded-full h-11 px-8 font-bold shadow-xl shadow-black/10 gap-2 transition-all active:scale-95"
+                            className="flex-1 md:flex-none bg-black text-white hover:bg-gray-800 rounded-full h-11 px-8 font-bold shadow-xl shadow-black/10 gap-2 transition-all active:scale-95"
                         >
                             <Save size={18} />
                             {saving ? 'Syncing...' : 'Save Changes'}

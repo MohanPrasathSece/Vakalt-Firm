@@ -99,9 +99,9 @@ const Footer = () => {
         </div>
 
         {/* Big VAKALT Text */}
-        <div className="border-t border-background/10 mt-16 pt-12">
-          <div className="overflow-hidden flex justify-center lg:justify-start">
-            <TypewriterText text="VAKALT" className="text-[18vw] lg:text-[15vw] leading-none font-serif font-bold text-background/90 tracking-[0.2em] opacity-10 select-none" />
+        <div className="border-t border-background/10 mt-16 pt-12 relative overflow-hidden">
+          <div className="flex justify-center lg:justify-start pointer-events-none">
+            <TypewriterText text="VAKALT" className="text-[20vw] sm:text-[18vw] lg:text-[15vw] leading-none font-serif font-bold text-background/90 tracking-[0.1em] sm:tracking-[0.2em] opacity-10 select-none whitespace-nowrap" />
           </div>
         </div>
 

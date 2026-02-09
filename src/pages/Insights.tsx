@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import { supabase } from "@/lib/supabase";
+import SEO from "@/components/SEO";
 
 interface Article {
   id: string;
@@ -63,6 +64,10 @@ const Insights = () => {
 
   return (
     <main className="bg-background min-h-screen">
+      <SEO
+        title="Legal Insights & Strategic Briefings"
+        description="Access authoritative legal intelligence on litigation finance, corporate law, and emerging legal technologies. Explore our strategic archive of legal expertise."
+      />
       <Navbar />
 
       {/* Hero banner */}

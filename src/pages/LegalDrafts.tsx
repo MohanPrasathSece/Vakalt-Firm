@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import SEO from "@/components/SEO";
 import { FileText, Download, Search, Filter, Scale } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
@@ -85,6 +86,10 @@ const LegalDrafts = () => {
 
     return (
         <main>
+            <SEO
+                title="Legal Drafts Library | Professional Templates"
+                description="Download professionally drafted legal templates, agreements, petitions, and notices. A comprehensive collection of ready-to-use legal documents for your needs."
+            />
             <Navbar />
 
             {/* Hero Section */}

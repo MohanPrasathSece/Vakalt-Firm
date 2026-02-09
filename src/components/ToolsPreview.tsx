@@ -4,8 +4,8 @@ import ScrollReveal from "./ScrollReveal";
 
 const tools = [
   {
-    title: "Court Fee Calculator",
-    desc: "Instantly estimate court fees based on jurisdiction, case type, and claim value.",
+    title: "Delhi Court Fee Calculator",
+    desc: "Instantly estimate Delhi court fees based on Ad Valorem rules and claim value.",
     status: "Available Now",
   },
   {

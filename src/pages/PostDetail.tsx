@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 interface Article {
     id: string;
@@ -18,6 +19,8 @@ interface Article {
     content: string;
     image_url?: string;
     slug: string;
+    seo_title?: string;
+    seo_description?: string;
 }
 
 import { useQuery } from '@tanstack/react-query';
@@ -99,8 +102,40 @@ const PostDetail = () => {
 
     if (!post) return null;
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "description": post.excerpt || post.seo_description,
+        "image": post.image_url,
+        "datePublished": post.created_at,
+        "author": {
+            "@type": "Organization",
+            "name": "Vakalt"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Vakalt",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://vakalt.com/logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": window.location.href
+        }
+    };
+
     return (
         <main className="bg-background">
+            <SEO
+                title={post.seo_title || post.title}
+                description={post.seo_description || post.excerpt}
+                ogImage={post.image_url}
+                ogType="article"
+                structuredData={structuredData}
+            />
             <Navbar />
 
             <article className="pt-32 pb-24 lg:pt-44 lg:pb-32">
@@ -241,6 +276,9 @@ const PostDetail = () => {
                     border-radius: 2rem;
                     margin: 3rem 0;
                     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                    max-width: 100%;
+                    height: auto;
+                    display: block;
                 }
                 .post-content b, .post-content strong {
                     color: black;
@@ -259,6 +297,27 @@ const PostDetail = () => {
                 }
                 .post-content li {
                     margin-bottom: 0.75rem;
+                }
+                .post-content iframe {
+                    width: 100% !important;
+                    aspect-ratio: 16 / 9;
+                    border-radius: 1.5rem;
+                    margin: 2rem 0;
+                }
+                .post-content table {
+                    display: block;
+                    width: 100%;
+                    overflow-x: auto;
+                    border-collapse: collapse;
+                    margin: 2rem 0;
+                }
+                .post-content pre {
+                    background: #F9FAFB;
+                    padding: 1.5rem;
+                    border-radius: 1rem;
+                    overflow-x: auto;
+                    font-size: 0.9rem;
+                    border: 1px solid #EEE;
                 }
             `}</style>
         </main>

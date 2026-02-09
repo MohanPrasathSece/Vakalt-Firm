@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import SEO from "@/components/SEO";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import {
@@ -38,6 +39,10 @@ const Contact = () => {
 
   return (
     <main>
+      <SEO
+        title="Contact Us | Schedule a Consultation"
+        description="Ready to discuss your legal needs? Contact Vakalt for a confidential consultation. Reach us via email, phone, or visit our office in Delhi."
+      />
       <Navbar />
 
       {/* Hero */}

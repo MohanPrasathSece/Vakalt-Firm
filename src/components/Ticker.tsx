@@ -16,7 +16,7 @@ const Ticker = ({ text = "LITIGATION • REFORMED • JUSTICE • SIMPLIFIED •
                     {[...Array(8)].map((_, i) => (
                         <span
                             key={i}
-                            className="text-6xl lg:text-8xl font-serif text-white font-bold px-4"
+                            className="text-4xl lg:text-8xl font-serif text-white font-bold px-4"
                         >
                             {text}
                         </span>
