@@ -7,7 +7,7 @@ import TypewriterText from "./TypewriterText";
 const areas = [
   { title: "Corporate Law", num: "01", desc: "Strategic counsel for business formation, M&A, governance, and complex commercial transactions." },
   { title: "Civil Litigation", num: "02", desc: "Skilled advocacy in disputes — from negotiation and mediation to courtroom representation." },
-  { title: "Criminal Law", num: "03", desc: "Vigorous defense protecting your rights and liberty at every stage of criminal proceedings." },
+  { title: "Criminal Law", num: "03", desc: "Expert criminal defence services. Protecting your rights with experienced legal defence." },
   { title: "Property & Real Estate", num: "04", desc: "Comprehensive guidance on acquisitions, title disputes, leasing, and regulatory compliance." },
   { title: "Family Law", num: "05", desc: "Compassionate and strategic support through custody, divorce, and family disputes." },
   { title: "Intellectual Property", num: "06", desc: "Protecting your innovations, trademarks, patents, and creative works in a digital world." },

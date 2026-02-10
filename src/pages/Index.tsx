@@ -50,11 +50,6 @@ const Index = () => {
         onScrollToCitizen={() => scrollToSection('citizen-services')}
       />
 
-      <Stats />
-      <Ticker />
-      <PracticeAreas />
-
-      {/* New Sections inserted while keeping old ones */}
       <div id="explore-legal-tools">
         <HomeTools />
       </div>
@@ -63,9 +58,13 @@ const Index = () => {
         <HomeCitizen />
       </div>
 
-      <BrandStory />
-
       <HomeJobs />
+
+      <Stats />
+      <Ticker />
+      <PracticeAreas />
+
+      <BrandStory />
 
       <ContactCTA />
       <Footer />

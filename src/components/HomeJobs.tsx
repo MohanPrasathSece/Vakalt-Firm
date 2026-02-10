@@ -14,14 +14,14 @@ const HomeJobs = () => {
                             <div className="flex items-center gap-3 mb-4">
                                 <Briefcase className="w-5 h-5 text-surface-charcoal-foreground/60" />
                                 <span className="text-sans text-xs font-bold uppercase tracking-[0.2em] text-surface-charcoal-foreground/60">
-                                    Careers at Vakalt
+                                    Opportunities
                                 </span>
                             </div>
                             <h2 className="text-serif text-3xl md:text-4xl font-bold text-surface-dark-foreground mb-4">
-                                Find Legal Jobs or Internships
+                                Find Jobs or Internships
                             </h2>
                             <p className="text-sans text-body text-surface-charcoal-foreground/60 max-w-lg">
-                                Join our team of legal experts and innovators. We are always looking for passionate individuals.
+                                Discover diverse career opportunities across India. Find your next role in leading organizations and companies nationwide.
                             </p>
                         </div>
 

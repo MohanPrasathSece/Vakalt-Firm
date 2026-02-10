@@ -13,18 +13,6 @@ const Footer = () => {
           <div className="lg:col-span-5 space-y-6">
             <ScrollReveal>
               <h3 className="text-serif text-3xl lg:text-4xl font-bold mb-6 transition-colors">VAKALT</h3>
-              <p className="text-sans text-sm lg:text-base text-background/60 mb-6 max-w-sm leading-relaxed">
-                Expert Criminal Defence Services. Protecting your rights with experienced legal defence.
-              </p>
-
-              <div className="space-y-2">
-                <p className="text-sans text-xs font-bold text-background/40 uppercase tracking-[0.2em]">Address</p>
-                <div className="text-sans text-sm text-background/60 leading-relaxed">
-                  <p>House Number 21, Begumpur</p>
-                  <p>Opposite Rohini Sector 22</p>
-                  <p>Delhi, DL 110086</p>
-                </div>
-              </div>
 
               <div className="space-y-2 mt-6">
                 <p className="text-sans text-xs font-bold text-background/40 uppercase tracking-[0.2em]">Contact & Hours</p>
