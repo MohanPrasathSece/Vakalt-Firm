@@ -9,7 +9,7 @@ interface HeroProps {
 
 const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-start bg-black overflow-hidden pt-36 lg:pt-48 pb-24">
+    <section className="relative min-h-screen flex flex-col items-center justify-start bg-black overflow-hidden pt-44 pb-24">
       {/* Background Texture */}
       <div className="absolute inset-0 pointer-events-none">
         <img src={heroBg} alt="" className="w-full h-full object-cover opacity-[0.2] grayscale" />
@@ -26,7 +26,7 @@ const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
           className="mb-6 flex items-center gap-3"
         >
           <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-          <span className="text-sans text-[10px] font-bold uppercase tracking-[0.4em] text-white/30">
+          <span className="text-serif text-[10px] font-bold uppercase tracking-[0.4em] text-white/30">
             Litigation Reformed
           </span>
           <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
@@ -37,16 +37,16 @@ const Hero = ({ onScrollToTools, onScrollToCitizen }: HeroProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-10 max-w-4xl"
+          className="text-center mb-16 max-w-4xl"
         >
-          <h1 className="text-serif text-3xl md:text-5xl lg:text-6xl font-medium text-white/90 leading-[1.2] tracking-tight">
+          <h1 className="text-serif text-3xl md:text-5xl lg:text-6xl font-extralight text-white/80 leading-[1.8] tracking-[0.05em]">
             Legal tools for professionals. <br className="hidden md:block" />
             Legal knowledge for everyone.
           </h1>
         </motion.div>
 
         {/* The Choice Prompt */}
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-12">
           <motion.h2
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}

@@ -61,12 +61,15 @@ const Index = () => {
       <HomeJobs />
 
       <Stats />
+
       <Ticker />
+
       <PracticeAreas />
 
       <BrandStory />
 
       <ContactCTA />
+
       <Footer />
     </main>
   );
