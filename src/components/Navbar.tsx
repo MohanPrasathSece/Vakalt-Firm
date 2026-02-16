@@ -180,7 +180,6 @@ const Navbar = ({ isLight = false }: { isLight?: boolean }) => {
                             { label: "Legal Tools", href: "/tools", desc: "Access various legal utilities and resources" },
                             { label: "Court Fee Calculator", href: "/tools/court-fee-calculator", desc: "Calculate court fees for your case" },
                             { label: "Legal Drafts", href: "/tools/legal-drafts", desc: "Download common legal draft templates" },
-                            { label: "Court VC Links", href: "/tools/court-vc-links", desc: "Direct video conferencing links for courts" },
                             { label: "Police Stations", href: "/tools/police-stations", desc: "Find police station information" },
                             { label: "Careers", href: "/careers", desc: "Explore legal job opportunities and internships" },
                             { label: "Submit a Job", href: "/careers/submit", desc: "Post a new legal job or internship" },

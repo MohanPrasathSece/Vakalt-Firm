@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Calculator, FileText, Video, Building, Scale, ChevronRight } from "lucide-react";
+import { Calculator, FileText, Building, Scale, ChevronRight } from "lucide-react";
 
 const tools = [
     {
@@ -18,13 +18,6 @@ const tools = [
         icon: FileText,
         link: "/tools/legal-drafts",
         color: "bg-zinc-100 text-foreground border border-border"
-    },
-    {
-        title: "Court VC Links",
-        description: "Find video conferencing links for courts across India. Search by judge name to quickly access virtual court hearings.",
-        icon: Video,
-        link: "/tools/court-vc-links",
-        color: "bg-zinc-50 text-foreground border border-border"
     },
     {
         title: "Police Stations Directory",

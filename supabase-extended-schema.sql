@@ -79,43 +79,6 @@ CREATE INDEX IF NOT EXISTS idx_drafts_category ON legal_drafts(category);
 CREATE INDEX IF NOT EXISTS idx_drafts_active ON legal_drafts(is_active);
 CREATE INDEX IF NOT EXISTS idx_drafts_downloads ON legal_drafts(downloads_count DESC);
 
--- ==========================================
--- 3. COURT VC LINKS TABLE
--- ==========================================
-CREATE TABLE IF NOT EXISTS court_vc_links (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    court_name TEXT NOT NULL,
-    judge_name TEXT NOT NULL,
-    court_type TEXT NOT NULL CHECK (court_type IN ('supreme-court', 'high-court', 'district-court', 'sessions-court', 'magistrate-court', 'tribunal')),
-    state TEXT NOT NULL,
-    district TEXT,
-    vc_link TEXT NOT NULL,
-    additional_info TEXT,
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Enable RLS
-ALTER TABLE court_vc_links ENABLE ROW LEVEL SECURITY;
-
--- Policy: Anyone can view active VC links
-CREATE POLICY "Public can view active vc links"
-ON court_vc_links FOR SELECT
-USING (is_active = true);
-
--- Policy: Authenticated users can manage VC links
-CREATE POLICY "Authenticated users can manage vc links"
-ON court_vc_links FOR ALL
-TO authenticated
-USING (true)
-WITH CHECK (true);
-
--- Create indexes for search
-CREATE INDEX IF NOT EXISTS idx_vc_judge_name ON court_vc_links USING gin(to_tsvector('english', judge_name));
-CREATE INDEX IF NOT EXISTS idx_vc_court_name ON court_vc_links USING gin(to_tsvector('english', court_name));
-CREATE INDEX IF NOT EXISTS idx_vc_court_type ON court_vc_links(court_type);
-CREATE INDEX IF NOT EXISTS idx_vc_state ON court_vc_links(state);
 
 -- ==========================================
 -- 4. COURT FEE STRUCTURE TABLE
@@ -213,10 +176,6 @@ CREATE TRIGGER update_drafts_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_vc_links_updated_at
-    BEFORE UPDATE ON court_vc_links
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_fee_structure_updated_at
     BEFORE UPDATE ON court_fee_structure
@@ -241,10 +200,6 @@ INSERT INTO court_fee_structure (case_type, court_type, min_claim_value, max_cla
 ('Bail Application', 'magistrate-court', NULL, NULL, 500, NULL, 'Fixed fee for bail applications'),
 ('Writ Petition', 'high-court', NULL, NULL, 10000, NULL, 'Fixed fee for writ petitions');
 
--- Sample Court VC Links (You'll need to add real links)
-INSERT INTO court_vc_links (court_name, judge_name, court_type, state, district, vc_link, additional_info) VALUES
-('Delhi High Court', 'Justice Rajesh Bindal', 'high-court', 'Delhi', 'New Delhi', 'https://example.com/vc/dhc-rb', 'Court No. 1'),
-('Tis Hazari Courts', 'Magistrate Amit Kumar', 'magistrate-court', 'Delhi', 'North Delhi', 'https://example.com/vc/thc-ak', 'Court No. 12');
 
 -- Comprehensive Delhi Police Stations Data
 INSERT INTO police_stations (station_name, district, region, address, city, state, jurisdictional_court, court_address) VALUES

@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import ScrollReveal from "./ScrollReveal";
-import { Calculator, FileText, Video, Building, Search, Gavel, ArrowRight } from "lucide-react";
+import { Calculator, FileText, Building, Search, Gavel, ArrowRight } from "lucide-react";
 
 const tools = [
     {
@@ -15,12 +15,6 @@ const tools = [
         desc: "Download ready-made legal templates and documents.",
         icon: FileText,
         link: "/tools/legal-drafts",
-    },
-    {
-        title: "Court VC Links",
-        desc: "Find video conferencing links for courts across India.",
-        icon: Video,
-        link: "/tools/court-vc-links",
     },
     {
         title: "Police Stations Info",

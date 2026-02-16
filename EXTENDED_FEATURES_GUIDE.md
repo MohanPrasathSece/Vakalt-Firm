@@ -5,9 +5,8 @@ This document covers the implementation of 5 major new features for the Vakalt l
 
 1. **Career Applications Tracking** - Enhanced careers system with application management
 2. **Legal Drafts Library** - Downloadable legal templates and documents
-3. **Court VC Links** - Video conferencing links searchable by judge name
-4. **Court Fee Calculator Enhancement** - Added comprehensive fee structure table
-5. **Police Stations Directory** - Police stations with jurisdictional courts
+3. **Court Fee Calculator Enhancement** - Added comprehensive fee structure table
+4. **Police Stations Directory** - Police stations with jurisdictional courts
 
 ---
 
@@ -70,36 +69,6 @@ This document covers the implementation of 5 major new features for the Vakalt l
 
 ---
 
-### 3. Court VC Links ✅
-
-**Database Table:** `court_vc_links`
-
-**Public Page:** `/tools/court-vc-links`
-
-**Features:**
-- Search by judge name (primary feature)
-- Search by court name
-- Filter by court type (Supreme Court, High Court, District Court, etc.)
-- Filter by state
-- Direct links to virtual court sessions
-- Additional info display (court number, etc.)
-- Responsive list layout
-
-**Court Types:**
-- Supreme Court
-- High Court
-- District Court
-- Sessions Court
-- Magistrate Court
-- Tribunal
-
-**Admin Features (to be implemented):**
-- Add new VC links
-- Edit existing links
-- Delete links
-- Bulk import functionality
-
----
 
 ### 4. Court Fee Calculator Enhancement ✅
 
@@ -175,11 +144,6 @@ This document covers the implementation of 5 major new features for the Vakalt l
    - Categorized by type
    - Tracks downloads
 
-3. **court_vc_links**
-   - Court video conferencing links
-   - Searchable by judge name
-   - Categorized by court type
-
 4. **court_fee_structure**
    - Fee rules for different case types
    - Court-specific fee structures
@@ -198,14 +162,12 @@ This document covers the implementation of 5 major new features for the Vakalt l
 
 ### Public Routes:
 - `/tools/legal-drafts` - Legal Drafts Library
-- `/tools/court-vc-links` - Court VC Links
 - `/tools/police-stations` - Police Stations Directory
 - `/tools/court-fee-calculator` - Enhanced Court Fee Calculator (existing, enhanced)
 
 ### Admin Routes:
 - `/admin/applications` - Career Applications Management
 - `/admin/legal-drafts` - Legal Drafts Management (Schema ready)
-- `/admin/vc-links` - VC Links Management (Schema ready)
 - `/admin/fee-structure` - Fee Structure Management (Schema ready)
 - `/admin/police-stations` - Police Stations Management (Schema ready)
 
@@ -215,7 +177,6 @@ This document covers the implementation of 5 major new features for the Vakalt l
 
 ### New Pages Created:
 1. `src/pages/LegalDrafts.tsx` - Legal drafts library page
-2. `src/pages/CourtVCLinks.tsx` - Court VC links page
 3. `src/pages/PoliceStations.tsx` - Police stations directory page
 
 ### Modified Files:
@@ -262,7 +223,6 @@ All new pages follow the existing Vakalt design system:
 
 The schema includes sample data for:
 - Court fee structures (6 entries)
-- Court VC links (2 entries)
 - Police stations (3 entries)
 
 **Note:** You'll need to add real data for:
@@ -283,7 +243,6 @@ The schema includes sample data for:
 2. **Add Sample Content:**
    - Upload legal draft files to Supabase Storage
    - Add legal draft entries to database
-   - Collect and add real VC links
    - Expand police station directory
 
 3. **Test Public Pages:**
@@ -295,8 +254,7 @@ The schema includes sample data for:
 ### Short-term (Recommended):
 1. **Admin Pages for New Features:**
    - Create admin pages for legal drafts management
-   - Create admin pages for VC links management
-   - Create admin pages for police stations management
+      - Create admin pages for police stations management
    - Create admin pages for fee structure management
 
 2. **Career Applications Enhancement:**
@@ -307,7 +265,6 @@ The schema includes sample data for:
 
 3. **Content Population:**
    - Add comprehensive legal draft library
-   - Collect VC links for all major courts
    - Build complete police station directory
    - Add fee structures for multiple states
 
@@ -315,13 +272,11 @@ The schema includes sample data for:
 1. **Advanced Features:**
    - Application analytics dashboard
    - Download statistics for legal drafts
-   - VC link availability status
-   - Interactive map for police stations
+      - Interactive map for police stations
    - Multi-state fee calculator
 
 2. **Integration:**
    - Email notifications for applications
-   - SMS alerts for VC link updates
    - API for external access
    - Mobile app integration
 
@@ -361,15 +316,6 @@ The schema includes sample data for:
 - [ ] Files open correctly
 - [ ] Responsive on mobile
 
-### Court VC Links:
-- [ ] Page loads correctly
-- [ ] Judge name search works
-- [ ] Court name search works
-- [ ] Court type filter works
-- [ ] State filter works
-- [ ] Links open in new tab
-- [ ] Responsive on mobile
-
 ### Police Stations:
 - [ ] Page loads correctly
 - [ ] Search functionality works
@@ -387,7 +333,7 @@ The schema includes sample data for:
 - [ ] Formatting is correct
 
 ### Tools Page:
-- [ ] All 4 tools display
+- [ ] All 3 tools display
 - [ ] Links to all tools work
 - [ ] Cards are responsive
 - [ ] Hover effects work
@@ -410,7 +356,6 @@ The schema includes sample data for:
 |---------|--------|-------------|------------|----------------|
 | Career Applications | ✅ Complete | ✅ Careers | ✅ /admin/applications | career_applications |
 | Legal Drafts | ✅ Complete | ✅ /tools/legal-drafts | ⏳ Pending | legal_drafts |
-| Court VC Links | ✅ Complete | ✅ /tools/court-vc-links | ⏳ Pending | court_vc_links |
 | Court Fee Table | ✅ Complete | ✅ /tools/court-fee-calculator | ⏳ Pending | court_fee_structure |
 | Police Stations | ✅ Complete | ✅ /tools/police-stations | ⏳ Pending | police_stations |
 

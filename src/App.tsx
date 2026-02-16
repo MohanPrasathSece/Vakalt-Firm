@@ -19,7 +19,6 @@ const CourtFeeCalculator = lazy(() => import("./pages/CourtFeeCalculator"));
 const CareersPage = lazy(() => import("./pages/Careers"));
 const SubmitJob = lazy(() => import("./pages/SubmitJob"));
 const LegalDrafts = lazy(() => import("./pages/LegalDrafts"));
-const CourtVCLinks = lazy(() => import("./pages/CourtVCLinks"));
 const PoliceStations = lazy(() => import("./pages/PoliceStations"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -60,7 +59,6 @@ const App = () => (
               <Route path="/tools" element={<Tools />} />
               <Route path="/tools/court-fee-calculator" element={<CourtFeeCalculator />} />
               <Route path="/tools/legal-drafts" element={<LegalDrafts />} />
-              <Route path="/tools/court-vc-links" element={<CourtVCLinks />} />
               <Route path="/tools/police-stations" element={<PoliceStations />} />
               <Route path="/careers" element={<CareersPage />} />
               <Route path="/careers/submit" element={<SubmitJob />} />
